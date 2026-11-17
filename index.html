@@ -1,0 +1,1071 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0b0a0e">
+<title>Grimoire de Ludra</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Guide fan du Sanctuaire de Ludra (Aion 2) : Rahu, Ketu et Ludra, chaque attaque et mécanique avec clips du jeu, schémas et arène 3D animée.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alegreya+SC:wght@500;700;800&family=Golos+Text:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: dark "grimoire" read next to the game. Topbar + boss HP, art hero, raid route, live 3D arena with game-clip compare, then per boss: attacks grid + HP-ordered mechanics timeline with sticky rules. */
+:root{
+  --bg:#0b0a0e;--surface:#15131a;--surface2:#1f1c25;--line:#2e2a35;
+  --ink:#ece5d7;--muted:#a39b8f;--soul:#8fd3bf;--gold:#d4a85a;--blood:#dc5841;
+  --kd:#f2cf3c;--safe:#3fd77a;--m-death:#ff3b3b;--orb-r:#ff5a4a;--orb-b:#4aa8ff;--void:#a35cff;
+  --f-display:"Alegreya SC","Palatino Linotype",Georgia,serif;
+  --f-body:"Golos Text","Segoe UI",system-ui,sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+  --r:12px;--navh:56px;color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:calc(var(--navh) + 12px)}
+html,body{background:var(--bg)}
+body{color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.55;margin:0;overflow-x:hidden}
+body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:60;opacity:.05;mix-blend-mode:overlay;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")}
+a{color:var(--soul)}
+a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,figure:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.wrap{max-width:1180px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2,h3,h4{font-family:var(--f-display);font-weight:700;letter-spacing:.01em;text-wrap:balance;margin:0}
+h2{font-size:clamp(1.9rem,4.6vw,3.1rem);line-height:1.02;font-weight:800}
+h3{font-size:1.18rem}
+p{margin:0}
+.kicker{font-family:var(--f-mono);font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+.ko{font-family:var(--f-body);color:var(--muted);font-size:.6em;font-weight:400;letter-spacing:0}
+.num{font-variant-numeric:tabular-nums;font-family:var(--f-mono)}
+.ambient{position:fixed;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(120% 70% at 50% 110%,rgba(110,90,150,.10),transparent 60%),radial-gradient(90% 60% at 10% 0%,rgba(74,168,255,.05),transparent 60%),var(--bg)}
+.cursor-glow{position:fixed;left:0;top:0;width:520px;height:520px;margin:-260px 0 0 -260px;border-radius:50%;pointer-events:none;z-index:0;background:radial-gradient(circle,rgba(167,127,228,.10),rgba(74,168,255,.05) 35%,transparent 65%);transform:translate(-999px,-999px);mix-blend-mode:screen}
+
+/* topbar */
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:51;background:var(--bg)}
+.topbar{position:fixed;left:0;right:0;top:0;z-index:50;padding-top:env(safe-area-inset-top,0px);background:color-mix(in srgb,var(--bg) 70%,transparent);backdrop-filter:blur(12px) saturate(1.2);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid color-mix(in srgb,var(--line) 70%,transparent)}
+.topbar .row{display:flex;align-items:center;gap:12px;height:var(--navh)}
+.brand{font:800 1.05rem var(--f-display);white-space:nowrap;color:var(--ink);text-decoration:none;display:flex;align-items:center;gap:8px}
+.brand svg{width:22px;height:22px}
+.nav{display:flex;gap:2px;overflow-x:auto;flex:1;min-width:0;scrollbar-width:none;mask-image:linear-gradient(90deg,#000 88%,transparent);-webkit-mask-image:linear-gradient(90deg,#000 88%,transparent)}
+.nav::-webkit-scrollbar{display:none}
+.nav a{font:600 .82rem var(--f-body);color:var(--muted);text-decoration:none;padding:7px 10px;border-radius:7px;white-space:nowrap;transition:color .2s,background .2s}
+.nav a:hover{color:var(--ink)}
+.nav a.cur{color:var(--ink);background:var(--surface2)}
+.vid-link{display:inline-flex;align-items:center;gap:6px;flex:0 0 auto;font:600 .8rem var(--f-body);color:#f0d9a6;text-decoration:none;padding:6px 12px;border:1px solid color-mix(in srgb,var(--gold) 55%,var(--line));border-radius:999px;background:linear-gradient(180deg,color-mix(in srgb,#d4a85a 22%,transparent),color-mix(in srgb,#d4a85a 8%,transparent));box-shadow:0 0 14px -6px rgba(212,168,90,.7);white-space:nowrap;transition:transform .2s,box-shadow .2s}
+.vid-link:hover{box-shadow:0 0 18px -4px rgba(212,168,90,.85);transform:translateY(-1px)}
+.bosshp{position:relative;height:5px;background:#24080a}
+.bosshp i{position:absolute;left:0;top:0;bottom:0;background:linear-gradient(90deg,#7a1b12,var(--blood) 60%,#ff8d6b);box-shadow:0 0 12px var(--blood);transition:width .15s linear}
+.bosshp b{position:absolute;right:max(16px,env(safe-area-inset-right,0px));top:7px;font:600 .66rem var(--f-mono);color:var(--blood);letter-spacing:.08em;text-shadow:0 1px 3px #000}
+
+/* hero */
+.hero{position:relative;min-height:min(92vh,820px);overflow:hidden;isolation:isolate;display:grid;align-items:end;background:#08070c}
+.hero-art{position:absolute;inset:0;z-index:-3}
+.hero-art img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:62% 30%;filter:saturate(1.05) contrast(1.05);transform:scale(1.04);animation:drift 24s ease-in-out infinite alternate}
+@keyframes drift{to{transform:scale(1.1) translate(-1.5%,1%)}}
+#heroCv{position:absolute;inset:0;width:100%;height:100%;z-index:-2;display:block}
+.hero-shade{position:absolute;inset:0;z-index:-1;pointer-events:none;background:linear-gradient(90deg,rgba(8,8,12,.94) 0%,rgba(8,8,12,.7) 34%,rgba(8,8,12,.1) 66%),linear-gradient(180deg,rgba(11,10,14,.35),transparent 30%,transparent 62%,var(--bg) 99%)}
+.hero-in{padding-block:calc(var(--navh) + 60px) 56px;display:grid;gap:18px;position:relative;z-index:1;width:100%}
+.hero-in>*{max-width:min(100%,640px)}
+.eyebrow{display:flex;flex-wrap:wrap;gap:8px}
+.eyebrow span{font:600 .7rem var(--f-mono);letter-spacing:.14em;text-transform:uppercase;padding:5px 9px;border:1px solid color-mix(in srgb,var(--gold) 45%,transparent);border-radius:999px;color:var(--gold);background:color-mix(in srgb,var(--bg) 55%,transparent)}
+.title{font-size:clamp(4rem,14vw,10rem);line-height:.84;font-weight:800;letter-spacing:-.01em;color:#f3e7cf;filter:drop-shadow(0 6px 30px rgba(163,92,255,.35))}
+.title .ch{display:inline-block;background:linear-gradient(180deg,#fff7e6 0%,#ead7ae 45%,#a87a35 100%);-webkit-background-clip:text;background-clip:text;color:transparent;animation:rise 1.2s cubic-bezier(.2,.7,.2,1) both;animation-delay:calc(var(--i) * 70ms + .15s)}
+@keyframes rise{from{transform:translateY(.35em) rotateX(60deg);filter:blur(10px);opacity:.15}to{transform:none;filter:none;opacity:1}}
+.subtitle{font:700 clamp(1.1rem,2.6vw,1.7rem) var(--f-display);color:var(--ink);letter-spacing:.04em;display:flex;flex-wrap:wrap;gap:4px 14px;align-items:baseline}
+.subtitle small{font:500 .9rem var(--f-body);color:var(--muted);letter-spacing:0}
+.hero-copy{max-width:54ch;color:#d4ccbd;font-size:1.02rem;text-shadow:0 1px 8px rgba(0,0,0,.6)}
+.cta{display:flex;flex-wrap:wrap;gap:10px}
+.btn{font:600 .88rem var(--f-body);color:var(--ink);background:var(--surface2);border:1px solid var(--line);border-radius:9px;padding:9px 14px;cursor:pointer;display:inline-flex;gap:7px;align-items:center;white-space:nowrap;text-decoration:none;transition:border-color .2s,transform .2s,box-shadow .2s,background .2s}
+.btn:hover{border-color:var(--muted)}
+.btn.on{background:var(--gold);color:#1a140a;border-color:var(--gold)}
+.btn.sm{padding:5px 9px;font-size:.78rem}
+.btn.prime{background:linear-gradient(180deg,#e6c27c,#b4852f);color:#1a1206;border-color:#e6c27c;box-shadow:0 10px 30px -10px rgba(212,168,90,.6)}
+.btn.prime:hover{transform:translateY(-2px);box-shadow:0 0 0 6px rgba(212,168,90,.12),0 14px 34px -10px rgba(212,168,90,.7)}
+.btn.ghost{background:color-mix(in srgb,var(--bg) 55%,transparent)}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;background:color-mix(in srgb,var(--line) 80%,transparent);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+.stats div{background:color-mix(in srgb,var(--bg) 78%,transparent);padding:10px 12px;display:grid;gap:1px;min-width:0}
+.stats b{font:600 1.15rem var(--f-mono);font-variant-numeric:tabular-nums}
+.stats span{font-size:.66rem;color:var(--muted);letter-spacing:.08em;text-transform:uppercase}
+.credit-hero{position:absolute;right:max(16px,env(safe-area-inset-right,0px));bottom:12px;font:500 .66rem var(--f-mono);color:rgba(236,229,215,.5)}
+
+.marquee{border-block:1px solid var(--line);overflow:hidden;background:linear-gradient(90deg,var(--bg),var(--surface),var(--bg));padding-block:12px}
+.marquee .track{display:flex;gap:34px;width:max-content;animation:mq 70s linear infinite}
+.marquee span{font:700 1.05rem var(--f-display);color:color-mix(in srgb,var(--ink) 70%,transparent);white-space:nowrap}
+.marquee span em{font:500 .8rem var(--f-body);font-style:normal;color:var(--gold);margin-left:8px}
+.marquee span::after{content:"✦";color:var(--blood);margin-left:34px;font-size:.7rem;vertical-align:middle}
+@keyframes mq{to{transform:translateX(-50%)}}
+
+main{display:grid;grid-template-columns:minmax(0,1fr);position:relative;z-index:1}
+.chapter{padding-block:80px 24px;position:relative;min-width:0}
+.chapter-head{display:grid;gap:10px;margin-bottom:26px;max-width:820px}
+.chapter-head .kicker{color:var(--gold)}
+.chapter-head h2{background:linear-gradient(180deg,#fff6e4,#d9c49b);-webkit-background-clip:text;background-clip:text;color:transparent}
+.chapter-head h2 .ko{-webkit-text-fill-color:var(--muted)}
+.lead{max-width:68ch;color:var(--muted);font-size:1rem}
+.sec{display:grid;gap:14px;margin-bottom:34px;min-width:0}
+.sec-h{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+.sec-h h3{font-size:1.45rem}
+.sec-h span{font:600 .7rem var(--f-mono);letter-spacing:.12em;color:var(--muted);text-transform:uppercase}
+.note{font-size:.84rem;color:var(--muted);max-width:80ch}
+
+/* route */
+.route{display:grid;gap:14px;grid-template-columns:repeat(4,minmax(0,1fr))}
+.portal{position:relative;border-radius:18px;padding:18px;min-height:300px;display:grid;align-content:end;gap:8px;overflow:hidden;border:1px solid var(--line);background:var(--surface);transition:border-color .3s,transform .3s;min-width:0}
+.portal:hover{border-color:color-mix(in srgb,var(--pa) 60%,var(--line));transform:translateY(-3px)}
+.portal .art{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;opacity:.75;transition:transform .8s,opacity .3s}
+.portal:hover .art{transform:scale(1.05);opacity:.95}
+.portal::after{content:"";position:absolute;inset:0;z-index:0;background:linear-gradient(180deg,transparent 15%,rgba(11,10,14,.7) 50%,var(--bg) 92%);pointer-events:none}
+.portal>:not(.art){position:relative;z-index:1}
+.portal[data-p="rahu"]{--pa:#dc5841}.portal[data-p="ketu"]{--pa:#4aa8ff}.portal[data-p="p1"]{--pa:#a35cff}.portal[data-p="p2"]{--pa:#d4a85a}
+.portal .gtag{font:600 .66rem var(--f-mono);letter-spacing:.14em;color:var(--pa);text-transform:uppercase}
+.portal h3{font-size:clamp(1.4rem,2.4vw,1.8rem);line-height:1;font-weight:800}
+.threats{display:grid;gap:3px;font-size:.84rem;color:#d6cdbd;margin:0;padding:0;list-style:none}
+.threats li::before{content:"✕ ";color:var(--blood);font-weight:700}
+.portal .btn{justify-self:start}
+
+/* arena */
+.stage{position:relative;border:1px solid var(--line);border-radius:16px;overflow:hidden;background:#0d0b10;box-shadow:0 30px 80px -40px rgba(163,92,255,.35)}
+.stage:fullscreen{border-radius:0}
+#arena{display:block;width:100%;height:clamp(380px,70vh,680px);touch-action:none;cursor:grab}
+.stage:fullscreen #arena{height:100vh}
+#arena:active{cursor:grabbing}
+.hud{position:absolute;left:12px;right:12px;top:10px;display:flex;justify-content:space-between;gap:8px;pointer-events:none;flex-wrap:wrap}
+.hud-title{background:color-mix(in srgb,var(--bg) 78%,transparent);border:1px solid var(--line);border-radius:8px;padding:6px 10px;max-width:60%;min-width:0}
+.hud-title b{font-family:var(--f-display);font-size:1.05rem;display:block;line-height:1.15}
+.hud-title span{font-size:.75rem;color:var(--muted)}
+.seg{display:flex;gap:2px;background:color-mix(in srgb,var(--bg) 70%,transparent);border:1px solid var(--line);border-radius:9px;padding:2px;pointer-events:auto;align-self:flex-start}
+.seg .btn{border:0;background:transparent}
+.seg .btn.on{background:var(--gold);color:#1a140a}
+.gauge{position:absolute;left:12px;right:12px;bottom:10px;pointer-events:none}
+.gauge-bar{height:8px;border-radius:4px;background:var(--surface2);border:1px solid var(--line);overflow:hidden}
+.gauge-bar i{display:block;height:100%;background:linear-gradient(90deg,var(--blood),var(--kd));width:0;transition:width .15s}
+.gauge small{display:block;margin-bottom:3px;color:var(--ink);text-shadow:0 1px 2px #000;font-family:var(--f-mono);font-size:.72rem}
+.caption{position:absolute;left:50%;bottom:40px;transform:translateX(-50%);width:max-content;max-width:min(92%,640px);text-align:center;background:color-mix(in srgb,var(--bg) 84%,transparent);border:1px solid var(--line);border-radius:8px;padding:6px 12px;font-size:.9rem;pointer-events:none}
+.cmp{position:absolute;right:12px;top:58px;width:min(38%,380px);background:color-mix(in srgb,var(--bg) 90%,transparent);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.cmp-h{display:flex;justify-content:space-between;align-items:center;padding:4px 8px;font-size:.78rem;gap:8px}
+.cmp-h small{color:var(--muted);font-size:.66rem}
+.cmp video{display:block;width:100%;aspect-ratio:16/9;background:#000;object-fit:cover}
+.x{background:none;border:0;color:var(--muted);font-size:1.1rem;cursor:pointer;line-height:1;padding:2px 4px}
+.ctrl{display:flex;flex-wrap:wrap;align-items:center;gap:8px 10px;padding-top:12px}
+.ctrl input[type=range]{flex:1 1 160px;min-width:0;accent-color:var(--gold)}
+.ctrl select{background:var(--surface2);color:var(--ink);border:1px solid var(--line);border-radius:9px;padding:5px 9px;font:600 .78rem var(--f-body)}
+.tg{display:inline-flex;gap:6px;align-items:center;font-size:.82rem;color:var(--muted)}
+.tg input{accent-color:var(--gold)}
+.chip-group{display:grid;gap:12px;margin-top:14px;grid-template-columns:repeat(auto-fit,minmax(min(100%,270px),1fr))}
+.chips{display:flex;flex-wrap:wrap;gap:6px;align-content:start;min-width:0}
+.chips h4{flex-basis:100%;margin:0 0 2px;font:600 .7rem var(--f-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--cc)}
+.chip{font:600 .78rem var(--f-body);color:var(--muted);background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:5px 11px;cursor:pointer;transition:color .2s,border-color .2s,background .2s}
+.chip:hover{color:var(--ink);border-color:var(--muted)}
+.chip.on{color:var(--bg);background:var(--cc);border-color:var(--cc)}
+.chips[data-b="rahu"]{--cc:#ff8d6b}.chips[data-b="ketu"]{--cc:#6fbaff}.chips[data-b="p1"]{--cc:#b98cff}.chips[data-b="p2"]{--cc:#e6c27c}
+.legend{display:flex;flex-wrap:wrap;gap:6px 12px;font-size:.78rem;color:var(--muted);padding-block:12px 2px}
+.legend i{display:inline-block;width:12px;height:12px;border-radius:3px;vertical-align:-2px;margin-right:5px}
+.legend .keys{flex-basis:100%;font-family:var(--f-mono);font-size:.7rem;opacity:.8}
+.steps{list-style:none;margin:6px 0 0;padding:0;display:grid;gap:4px;font-size:.86rem;grid-template-columns:repeat(auto-fill,minmax(min(100%,360px),1fr))}
+.steps li{display:grid;grid-template-columns:48px 1fr;gap:8px;padding:5px 8px;border-radius:6px;color:var(--muted);cursor:pointer;border:1px solid transparent}
+.steps li.cur{background:var(--surface2);color:var(--ink);border-color:var(--line)}
+.steps li .num{color:var(--gold);font-size:.78rem}
+.nogl{display:grid;place-items:center;height:clamp(380px,70vh,680px);color:var(--muted);padding:24px;text-align:center}
+
+/* clips */
+.clip{position:relative;margin:0;border-radius:10px;overflow:hidden;border:1px solid var(--line);background:#000;aspect-ratio:16/9;cursor:pointer;max-width:100%}
+.clip img,.clip video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+.clip img{transition:transform .5s,filter .3s;filter:brightness(.85)}
+.clip:hover img{transform:scale(1.04);filter:brightness(1)}
+.clip .pb{position:absolute;left:50%;top:50%;width:52px;height:52px;margin:-26px 0 0 -26px;border-radius:50%;display:grid;place-items:center;background:color-mix(in srgb,var(--bg) 60%,transparent);border:1px solid color-mix(in srgb,var(--gold) 60%,transparent);color:var(--gold);font-size:1.1rem;box-shadow:0 0 24px -6px rgba(212,168,90,.7);transition:transform .2s}
+.clip:hover .pb{transform:scale(1.1)}
+.clip .src{position:absolute;right:6px;bottom:4px;font:500 .6rem var(--f-mono);color:rgba(236,229,215,.75);text-shadow:0 1px 2px #000}
+.clip.playing{cursor:default}
+.clip.playing .pb,.clip.playing .src{display:none}
+.diag{margin:0;display:grid;gap:5px;align-content:start}
+.diag img{width:100%;border-radius:10px;border:1px solid var(--line);background:#0e0c13;cursor:zoom-in;display:block}
+.diag figcaption{font-size:.74rem;color:var(--muted)}
+
+/* attacks grid */
+.atks{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr))}
+.atk{background:color-mix(in srgb,var(--surface) 92%,transparent);border:1px solid var(--line);border-radius:14px;padding:12px;display:grid;gap:8px;align-content:start;min-width:0}
+.atk h4{font-size:1.08rem;display:flex;gap:8px;align-items:baseline;flex-wrap:wrap}
+.atk h4 small{font:600 .66rem var(--f-mono);color:var(--gold);letter-spacing:.1em}
+.atk p{color:#cfc6b6;font-size:.9rem}
+.tip,.warn{font-size:.85rem;border-left:2px solid var(--safe);padding-left:8px;color:#d9eadf}
+.warn{border-color:var(--blood);color:#f0d6cf}
+.tip b,.warn b{font:600 .66rem var(--f-mono);letter-spacing:.1em;text-transform:uppercase;margin-right:6px}
+.tip b{color:var(--safe)}.warn b{color:var(--blood)}
+.acts{display:flex;gap:6px;flex-wrap:wrap}
+
+/* HP rail */
+.rail{position:relative;padding:34px 16px 22px;border:1px solid var(--line);border-radius:var(--r);background:color-mix(in srgb,var(--surface) 90%,transparent)}
+.rail-bar{position:relative;height:14px;border-radius:7px;background:linear-gradient(90deg,#5a120c,var(--blood) 50%,#ff8d6b);box-shadow:inset 0 0 0 1px rgba(0,0,0,.4),0 0 24px -6px var(--blood)}
+.rail-bar::after{content:"";position:absolute;inset:0;border-radius:7px;background:repeating-linear-gradient(90deg,transparent 0 calc(10% - 1px),rgba(0,0,0,.35) calc(10% - 1px) 10%)}
+.mk{position:absolute;top:50%;transform:translate(-50%,-50%);z-index:2;width:22px;height:22px;border-radius:50%;background:var(--bg);border:2px solid var(--gold);cursor:pointer;padding:0;transition:transform .2s,box-shadow .2s}
+.mk:hover{transform:translate(-50%,-50%) scale(1.25);box-shadow:0 0 0 6px color-mix(in srgb,var(--gold) 20%,transparent),0 0 18px var(--gold)}
+.mk span{position:absolute;left:50%;transform:translateX(-50%);top:-28px;font:600 .72rem var(--f-mono);color:var(--gold);white-space:nowrap}
+.mk.lo span{top:24px}
+.mk.end span{left:auto;right:-6px;transform:none}.mk.start span{left:-6px;transform:none}
+.rail{overflow:hidden}
+.rail-ends{display:flex;justify-content:space-between;font:600 .68rem var(--f-mono);color:var(--muted);margin-top:22px;letter-spacing:.08em}
+
+/* mechanics timeline */
+.glayout{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,340px);gap:22px;align-items:start}
+.tl{position:relative;display:grid;gap:8px;padding-left:84px;min-width:0}
+.tl::before{content:"";position:absolute;left:66px;top:6px;bottom:6px;width:2px;background:linear-gradient(var(--gold),var(--blood))}
+.tl-item{position:relative;padding:12px 14px 14px;border-radius:12px;border:1px solid var(--line);background:color-mix(in srgb,var(--surface) 88%,transparent);display:grid;grid-template-columns:minmax(0,1fr) minmax(0,300px);gap:14px;min-width:0}
+.tl-item:target{border-color:color-mix(in srgb,var(--gold) 60%,var(--line))}
+.tl-item::before{content:"";position:absolute;left:-24px;top:15px;width:10px;height:10px;border-radius:50%;background:var(--gold);box-shadow:0 0 12px var(--gold)}
+.tl-bar{position:absolute;left:-88px;top:10px;width:56px;text-align:right;font:600 .8rem var(--f-mono);color:var(--gold)}
+.tl-txt{display:grid;gap:8px;align-content:start;min-width:0}
+.tl-item h3{font-size:1.12rem}
+.tl-item p,.tl-item li{color:#cfc6b6;font-size:.92rem}
+.tl-item ol,.tl-item ul{margin:0;padding-left:20px;display:grid;gap:4px}
+.tl-media{display:grid;gap:8px;align-content:start;min-width:0}
+.rules{position:sticky;top:calc(var(--navh) + 18px);background:color-mix(in srgb,var(--surface) 94%,transparent);border:1px solid var(--line);border-radius:14px;overflow:hidden;box-shadow:0 24px 60px -30px rgba(0,0,0,.8);min-width:0}
+.rules h3{padding:12px 14px;border-bottom:1px solid var(--line);font-size:1.05rem;display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.rules h3 small{font:600 .66rem var(--f-mono);letter-spacing:.12em;color:var(--muted);text-transform:uppercase}
+.rules ol{margin:0;padding:12px 14px 14px 34px;display:grid;gap:8px;font-size:.88rem;color:#d6cdbd}
+.rules ol li::marker{color:var(--gold);font-family:var(--f-mono);font-size:.8rem}
+.rules .assign{border-top:1px solid var(--line);padding:12px 14px;display:grid;gap:8px}
+.rules .assign div{display:grid;grid-template-columns:auto 1fr;gap:10px;font-size:.84rem;align-items:baseline}
+.rules .assign b{font:600 .72rem var(--f-mono);color:var(--gold);white-space:nowrap}
+.rules .assign span{color:var(--muted)}
+.overview{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,320px);gap:16px;align-items:start;border:1px solid var(--line);border-radius:14px;padding:16px;background:linear-gradient(90deg,color-mix(in srgb,var(--pa,#a35cff) 10%,var(--surface)),var(--surface) 70%)}
+.overview p{color:#d6cdbd;font-size:.95rem}
+.overview .txt{display:grid;gap:10px;min-width:0}
+
+.lightbox{position:fixed;inset:0;z-index:70;background:rgba(5,4,8,.92);display:grid;place-items:center;padding:24px;cursor:zoom-out}
+.lightbox img{max-width:100%;max-height:100%;border-radius:10px}
+.src-list{margin:0;padding-left:18px;display:grid;gap:6px;font-size:.9rem;color:var(--muted)}
+.credit{border:1px solid color-mix(in srgb,var(--gold) 40%,var(--line));border-radius:14px;padding:16px;background:color-mix(in srgb,var(--gold) 7%,var(--surface));display:grid;gap:6px}
+.credit p{color:#d6cdbd;font-size:.92rem}
+footer{border-top:1px solid var(--line);margin-top:60px;padding-block:28px 40px;color:var(--muted);font-size:.82rem}
+
+@media (max-width:980px){
+  .route{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .glayout,.overview{grid-template-columns:minmax(0,1fr)}
+  .rules{position:static}
+  .tl-item{grid-template-columns:minmax(0,1fr)}
+}
+@media (max-width:620px){
+  .route{grid-template-columns:minmax(0,1fr)}
+  .portal{min-height:240px}
+  .stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .tl{padding-left:22px}
+  .tl::before{left:6px}
+  .tl-item::before{left:-21px}
+  .tl-bar{position:static;text-align:left;width:auto}
+  .hud-title{max-width:100%}
+  .caption{bottom:34px;font-size:.8rem}
+  .cmp{left:12px;right:12px;width:auto;top:auto;bottom:70px}
+  .vid-link span{display:none}
+}
+@media (prefers-reduced-motion:reduce){
+  .marquee .track,.title .ch,.hero-art img{animation:none}
+  html{scroll-behavior:auto}
+}
+</style>
+</head>
+<body>
+
+<div class="ambient" aria-hidden="true"></div>
+<div class="cursor-glow" id="cursorGlow" aria-hidden="true"></div>
+
+<header class="topbar">
+  <div class="wrap row">
+    <a class="brand" href="#top"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2l3 6 6 1-4.5 4.5L18 20l-6-3-6 3 1.5-6.5L3 9l6-1z" stroke="#d4a85a" stroke-width="1.5" stroke-linejoin="round"/><circle cx="9" cy="11" r="1.6" fill="#4aa8ff"/><circle cx="15" cy="11" r="1.6" fill="#ff5a4a"/></svg><span>Grimoire</span></a>
+    <nav class="nav" id="nav" aria-label="Sections">
+      <a href="#raid">Le raid</a><a href="#arena-sec">Arène 3D</a><a href="#rahu">Rahu</a><a href="#ketu">Ketu</a><a href="#ludra1">Ludra P1</a><a href="#ludra2">Ludra P2</a><a href="#src">Sources</a>
+    </nav>
+    <a class="vid-link" href="https://youtu.be/z2HXWYs-Xow" target="_blank" rel="noopener" title="Le guide en vidéo sur YouTube">▶ <span>Vidéo</span></a>
+  </div>
+  <div class="bosshp" aria-hidden="true"><i id="hpFill" style="width:100%"></i><b id="hpTxt">LUDRA · 100 %</b></div>
+</header>
+
+<section class="hero" id="top">
+  <div class="hero-art" aria-hidden="true"><img src="img/ludra-couverture-v2.webp" alt=""></div>
+  <canvas id="heroCv" aria-hidden="true"></canvas>
+  <div class="hero-shade" aria-hidden="true"></div>
+  <div class="wrap hero-in">
+    <div class="eyebrow"><span>Raid · 10 joueurs</span><span>GS 2 700 min.</span><span>Rahu · Ketu · Ludra</span></div>
+    <h1 class="title" id="title" aria-label="Ludra">Ludra</h1>
+    <div class="subtitle">Sanctuaire de Ludra <small>Eternal Ludra · premier raid d'Aion 2</small></div>
+    <p class="hero-copy">Deux mini-boss à 5 joueurs, puis Ludra à 10 en deux phases. Chaque attaque et chaque mécanique avec le clip du jeu, les schémas de placement et une arène 3D pour voir où se mettre.</p>
+    <div class="cta">
+      <a class="btn prime" href="#arena-sec">▶ Mécaniques en 3D</a>
+      <a class="btn ghost" href="#rahu">Rahu</a>
+      <a class="btn ghost" href="#ketu">Ketu</a>
+      <a class="btn ghost" href="#ludra1">Ludra</a>
+    </div>
+    <div class="stats">
+      <div><b>10</b><span>Joueurs</span></div>
+      <div><b>2 700</b><span>Gearscore min.</span></div>
+      <div><b>2 + 1</b><span>Mini-boss + final</span></div>
+      <div><b>50 %</b><span>Passage en phase 2</span></div>
+    </div>
+  </div>
+  <span class="credit-hero">Image : guidemmo.com</span>
+</section>
+
+<div class="marquee" aria-hidden="true"><div class="track" id="mq"></div></div>
+
+<main id="main">
+
+<section class="chapter wrap" id="raid">
+  <div class="chapter-head">
+    <div class="kicker">Déroulement</div>
+    <h2>Deux mini-boss, puis le dragon</h2>
+    <p class="lead">Le raid se joue à 10 avec 2 700 de gearscore minimum. Rahu et Ketu se font en groupes de 5. Les deux groupes se retrouvent ensuite pour Ludra, un combat en deux phases avec la bascule à 50 %.</p>
+  </div>
+  <div class="route">
+    <article class="portal" data-p="rahu">
+      <img class="art" src="img/rahu-mecanique-principale.webp" alt="" loading="lazy">
+      <span class="gtag">Boss 1 · 5 joueurs</span>
+      <h3>Rahu</h3>
+      <ul class="threats"><li>Cercle violet : 3 flaques = one-shot</li><li>60 % : téléporté au coin</li><li>40 % : carte coupée en 4</li></ul>
+      <a class="btn sm" href="#rahu">Rahu →</a>
+    </article>
+    <article class="portal" data-p="ketu">
+      <img class="art" src="img/ketu-mecanique-principale.webp" alt="" loading="lazy">
+      <span class="gtag">Boss 2 · 5 joueurs</span>
+      <h3>Ketu</h3>
+      <ul class="threats"><li>Fantômes et triangles lumineux</li><li>Œil rouge : regarder, bleu : dos</li><li>20 % : cristaux d'invulnérabilité</li></ul>
+      <a class="btn sm" href="#ketu">Ketu →</a>
+    </article>
+    <article class="portal" data-p="p1">
+      <img class="art" src="img/ludra-phase-1-mecanique-oeil-rouge.webp" alt="" loading="lazy">
+      <span class="gtag">Final · phase 1 · 100–50 %</span>
+      <h3>Ludra</h3>
+      <ul class="threats"><li>Orbe rouge : blocage obligatoire</li><li>Œil rouge en boucle jusqu'à 50 %</li><li>Shugo : trouver la case sûre</li></ul>
+      <a class="btn sm" href="#ludra1">Phase 1 →</a>
+    </article>
+    <article class="portal" data-p="p2">
+      <img class="art" src="img/ludra-phase-2-attaque-zikel.webp" alt="" loading="lazy">
+      <span class="gtag">Final · phase 2 · 50–0 %</span>
+      <h3>Ludra</h3>
+      <ul class="threats"><li>Zikel : 4 vagues de lasers</li><li>35 % : bleu à gauche, rouge à droite</li><li>10 % : une zone de ta couleur chacun</li></ul>
+      <a class="btn sm" href="#ludra2">Phase 2 →</a>
+    </article>
+  </div>
+</section>
+
+<section class="chapter wrap" id="arena-sec">
+  <div class="chapter-head">
+    <div class="kicker">Schémas animés</div>
+    <h2>Arène en 3D</h2>
+    <p class="lead">Choisis une mécanique sous l'arène. Fais glisser pour tourner la caméra, molette ou pincement pour zoomer. Le bouton « Comparer avec le jeu » ouvre le clip correspondant à côté du schéma.</p>
+  </div>
+  <div class="stage" id="stage">
+    <canvas id="arena" aria-label="Arène 3D montrant la mécanique sélectionnée"></canvas>
+    <div class="hud">
+      <div class="hud-title"><span id="simGate">—</span><b id="simName">Chargement…</b></div>
+      <div class="seg" role="group" aria-label="Caméra">
+        <button class="btn sm on" data-cam="orbit" type="button">Libre</button>
+        <button class="btn sm" data-cam="top" type="button">Dessus</button>
+        <button class="btn sm" data-cam="low" type="button">Raid</button>
+      </div>
+    </div>
+    <div class="caption" id="simCap">Chargement de l'arène…</div>
+    <div class="gauge" id="gauge" hidden><small id="gaugeLbl">—</small><div class="gauge-bar"><i id="gaugeFill"></i></div></div>
+    <aside class="cmp" id="cmp" hidden><div class="cmp-h"><b>Dans le jeu</b><small>clip guidemmo.com</small><button class="x" id="cmpClose" type="button" aria-label="Fermer le clip">×</button></div><video id="cmpVid" muted loop playsinline controls preload="none"></video></aside>
+  </div>
+  <div class="ctrl">
+    <button class="btn" id="play" type="button">❚❚ Pause</button>
+    <button class="btn" id="restart" type="button">↺ Rejouer</button>
+    <input type="range" id="scrub" min="0" max="1000" value="0" aria-label="Avancement de la mécanique">
+    <span class="num" id="tLbl" style="color:var(--muted)">0.0 s</span>
+    <select id="speed" aria-label="Vitesse"><option value="0.5">×0.5</option><option value="1" selected>×1</option><option value="1.5">×1.5</option><option value="2">×2</option></select>
+    <label class="tg"><input type="checkbox" id="tglLabels" checked> Noms</label>
+    <button class="btn sm" id="btnCmp" type="button">🎬 Comparer avec le jeu</button>
+    <button class="btn sm" id="btnFull" type="button">⛶ Plein écran</button>
+  </div>
+  <div class="chip-group" id="chipGroup"></div>
+  <div class="legend">
+    <span><i style="background:var(--m-death)"></i>Mortel / très gros dégâts</span><span><i style="background:var(--kd)"></i>Dégâts / zone qui suit</span><span><i style="background:var(--safe)"></i>Zone sûre</span><span><i style="background:var(--void)"></i>Zone violette</span><span><i style="background:var(--orb-r)"></i>Rouge</span><span><i style="background:var(--orb-b)"></i>Bleu</span><span><i style="background:#d4a85a"></i>Tank / bloqueur</span><span><i style="background:#3fd77a"></i>Soin / Aède</span><span><i style="background:#8fd3bf"></i>DPS</span>
+    <span class="keys">Clavier : Espace pause · ←/→ ±0,5 s · [ ] mécanique précédente/suivante</span>
+  </div>
+  <ol class="steps" id="steps"></ol>
+</section>
+
+<section class="chapter wrap" id="rahu" style="--pa:#dc5841">
+  <div class="chapter-head">
+    <div class="kicker">Boss 1 · groupe de 5</div>
+    <h2>Rahu</h2>
+    <p class="lead">Rahu enchaîne toujours les mêmes attaques dans le même ordre. Les grosses mécaniques tombent à des paliers de PV : plus vous tapez fort, moins vous voyez d'attaques entre elles.</p>
+  </div>
+  <div class="sec overview">
+    <div class="txt">
+      <h3>Le cercle violet, toute la fight</h3>
+      <p>À partir du premier laser rouge (80 %), un joueur reçoit un cercle violet qui se remplit autour de lui. Quand il est plein, il faut au moins 2 autres joueurs dedans.</p>
+      <p>Sinon une flaque violette apparaît : gros dégâts, ralentissement, et elle grandit avec le temps. À la 3e flaque, le boss one-shot toute la carte.</p>
+      <div class="tip"><b>Stratégie</b>Aède, Clerc, Tank et 2 DPS, stackés à 5 en permanence. Avec cette compo vous encaissez toutes les attaques, et le stack règle à lui seul le stack rouge et le cercle violet.</div>
+      <div class="acts"><button class="btn sm" type="button" data-sim="rahu-violet">▶ Voir en 3D</button></div>
+    </div>
+    <div class="warn"><b>Erreur classique</b>Beaucoup de joueurs meurent en voulant tout esquiver. Sur le Cross, celui qui esquive la 1re croix se jette souvent dans la 2e. Mieux vaut encaisser un coup et ne pas bouger.</div>
+  </div>
+  <div class="sec"><div class="sec-h"><h3>Attaques de base</h3><span>dans l'ordre du cycle</span></div><div class="atks" id="atkRahu"></div></div>
+  <div class="sec"><div class="rail" id="railRahu"></div></div>
+  <div class="glayout">
+    <div class="tl" id="tlRahu"></div>
+    <aside class="rules">
+      <h3>Règles d'or <small>Rahu</small></h3>
+      <ol>
+        <li>Toujours stackés à 5.</li>
+        <li>Placement de départ dans une diagonale du boss.</li>
+        <li>Encaisser un coup plutôt qu'en prendre deux en esquivant.</li>
+        <li>Cercle violet : au moins 3 joueurs dedans à la fin.</li>
+        <li>Œil rouge : sur le côté de la safe zone, dash dedans vers 90 % du cast.</li>
+        <li>Au 20 % : aligner le tir du boss sur les monstres.</li>
+      </ol>
+      <div class="assign">
+        <div><b>Marqueur</b><span>Sur le tank : c'est lui que tout le monde suit (stack rouge, Split Map).</span></div>
+        <div><b>Compo</b><span>Aède, Clerc, Tank, 2 DPS.</span></div>
+      </div>
+    </aside>
+  </div>
+</section>
+
+<section class="chapter wrap" id="ketu" style="--pa:#4aa8ff">
+  <div class="chapter-head">
+    <div class="kicker">Boss 2 · groupe de 5</div>
+    <h2>Ketu</h2>
+    <p class="lead">Même logique de cycle que Rahu. La mécanique principale revient à 80 % et 50 %, puis la Last Mech à 20 %. Il faut un bon soigneur, idéalement accompagné d'un Aède.</p>
+  </div>
+  <div class="sec overview">
+    <div class="txt">
+      <h3>Placement pour la mécanique principale</h3>
+      <p>Deux joueurs prennent la droite, deux la gauche, et un le fond de la carte (en regardant vers le spawn).</p>
+      <div class="tip"><b>Compo</b>Aède, Clerc, Gladiateur et 2 DPS distance. Le tank n'est pas indispensable mais aide. Le Rôdeur peut gérer une mécanique seul : pratique, pas obligatoire.</div>
+      <div class="acts"><button class="btn sm" type="button" data-sim="ketu-principale">▶ Voir en 3D</button></div>
+    </div>
+    <figure class="diag"><img src="img/ketu-placement.webp" alt="Schéma : placement des 5 joueurs autour de Ketu, spawn en bas" loading="lazy"><figcaption>Placement des 5 joueurs · schéma guidemmo.com</figcaption></figure>
+  </div>
+  <div class="sec"><div class="sec-h"><h3>Attaques de base</h3><span>dans l'ordre du cycle</span></div><div class="atks" id="atkKetu"></div></div>
+  <div class="sec"><div class="rail" id="railKetu"></div></div>
+  <div class="glayout">
+    <div class="tl" id="tlKetu"></div>
+    <aside class="rules">
+      <h3>Règles d'or <small>Ketu</small></h3>
+      <ol>
+        <li>Aucun fantôme ne doit toucher un triangle lumineux.</li>
+        <li>Rien ne presse pendant la mécanique principale : on esquive d'abord.</li>
+        <li>À la fin, tout le monde dans la zone de soin, potions comprises.</li>
+        <li>Œil rouge : le regarder. Œil bleu : lui tourner le dos.</li>
+        <li>Last Mech : 2 cristaux tapés au corps à corps suffisent.</li>
+      </ol>
+      <div class="assign">
+        <div><b>Draupnir</b><span>Un CàC ciblé peut bloquer : la vague est annulée.</span></div>
+        <div><b>Après 20 %</b><span>Rage : lasers 2 fois de suite, AoE en continu.</span></div>
+      </div>
+    </aside>
+  </div>
+</section>
+
+<section class="chapter wrap" id="ludra1" style="--pa:#a35cff">
+  <div class="chapter-head">
+    <div class="kicker">Boss final · 10 joueurs · 100 → 50 %</div>
+    <h2>Ludra <span class="ko">phase 1</span></h2>
+    <p class="lead">Un combat long en deux phases. Avec beaucoup de dégâts, on saute une partie des attaques. Tant que Ludra n'est pas à 50 %, il refait la mécanique de l'œil rouge en boucle.</p>
+  </div>
+  <div class="sec"><div class="sec-h"><h3>Attaques de base</h3><span>phase 1</span></div><div class="atks" id="atkP1"></div></div>
+  <div class="sec"><div class="rail" id="railP1"></div></div>
+  <div class="glayout">
+    <div class="tl" id="tlP1"></div>
+    <aside class="rules">
+      <h3>Règles d'or <small>Ludra P1</small></h3>
+      <ol>
+        <li>Orbe bleue : saut au pied. Orbe rouge : BLOCAGE.</li>
+        <li>Cible de l'œil rouge : rester près du boss et se signaler en vocal.</li>
+        <li>Zones jaunes qui suivent : CD défensifs, blocage ou esquive parfaite.</li>
+        <li>Grosse attaque finale : sortir dès que la zone extérieure est passée.</li>
+        <li>Réatterrissage : CROSS, se mettre en diagonale.</li>
+        <li>Shugo : cases du milieu d'abord, puis tout le monde sur la case qui brille.</li>
+      </ol>
+      <div class="assign">
+        <div><b>Shugo</b><span>CàC sur les cases intérieures, distances sur l'extérieur, 4 bloqueurs B sur les bords.</span></div>
+      </div>
+    </aside>
+  </div>
+</section>
+
+<section class="chapter wrap" id="ludra2" style="--pa:#d4a85a">
+  <div class="chapter-head">
+    <div class="kicker">Boss final · 10 joueurs · 50 → 0 %</div>
+    <h2>Ludra <span class="ko">phase 2</span></h2>
+    <p class="lead">Nouvelles attaques et nouvelles mécaniques, avec des placements fixes : groupe bleu à gauche, groupe rouge à droite. Après le Shugo de 25 %, Ludra passe enragé.</p>
+  </div>
+  <div class="sec"><div class="sec-h"><h3>Attaques de base</h3><span>phase 2</span></div><div class="atks" id="atkP2"></div></div>
+  <div class="sec"><div class="rail" id="railP2"></div></div>
+  <div class="glayout">
+    <div class="tl" id="tlP2"></div>
+    <aside class="rules">
+      <h3>Règles d'or <small>Ludra P2</small></h3>
+      <ol>
+        <li>Bleu à gauche, rouge à droite, comme les orbes du boss.</li>
+        <li>Zikel : on attend à côté, on entre après l'explosion.</li>
+        <li>Éclairs : bouger juste après l'animation.</li>
+        <li>Orbe rouge : prendre le 1er Draupnir, bloquer, sauter le 2e.</li>
+        <li>Shugo P2 : garder le boss à l'écran pour voir les Draupnir.</li>
+        <li>10 % : une seule personne par zone.</li>
+      </ol>
+      <div class="assign">
+        <div><b>Groupes</b><span>5 bleus à gauche, 5 rouges à droite pour Zikel et les couleurs.</span></div>
+      </div>
+    </aside>
+  </div>
+</section>
+
+<section class="chapter wrap" id="src">
+  <div class="chapter-head">
+    <div class="kicker">Sources</div>
+    <h2>Crédits</h2>
+  </div>
+  <div class="credit">
+    <p>Mécaniques, schémas, images et clips repris du guide <a href="https://guidemmo.com/sanctuary-ludra/" target="_blank" rel="noopener">Sanctuaire de Ludra</a> d'Iruminati sur guidemmo.com, qui s'appuie sur <a href="https://youtu.be/z2HXWYs-Xow" target="_blank" rel="noopener">cette vidéo</a>. Les textes ont été reformulés. Les schémas 3D sont des simplifications pour comprendre les placements.</p>
+  </div>
+</section>
+
+</main>
+<footer><div class="wrap">Guide fan non officiel. Aion 2 et ses personnages appartiennent à leurs ayants droit. Images et clips : guidemmo.com.</div></footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script>
+(function(){
+"use strict";
+const RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const $=s=>document.querySelector(s);
+
+/* ===== content (reformulé d'après le guide guidemmo.com) ===== */
+const ATK={
+rahu:[
+ {n:'Cross',k:'Attaque 1',m:'rahu-attaque-cross',sim:'rahu-cross',p:'Une première croix sur les points cardinaux du boss, puis une seconde sur les diagonales.',tip:'Commence dans une diagonale : la 1re croix ne te touche pas et la 2e s\'esquive facilement.'},
+ {n:'4 Cercles',k:'Attaque 2',m:'rahu-attaque-4-cercles',sim:'rahu-cercles',p:'Rahu prend son épée à deux mains et frappe 4 cercles successifs, en partant du corps à corps.',tip:'Mieux vaut encaisser un cercle que d\'essayer d\'esquiver et d\'en prendre deux.'},
+ {n:'Stack rouge',k:'Attaque 3',m:'rahu-attaque-stack',sim:'rahu-stack',p:'Des cercles rouges apparaissent autour des joueurs avec une safe zone au centre. Ensuite part une vague type Draupnir, à sauter.',tip:'Mettez un marqueur sur un joueur (le tank en général) : tout le monde se stack dessus.'}
+],
+ketu:[
+ {n:'Faux',k:'Attaque 1',m:null,p:'Ketu frappe dans son dos avec sa faux, sur 180°.'},
+ {n:'Draupnir',k:'Attaque 2',m:'ketu-attaque-draupnir',m2:'ketu-attaque-draupnir-blocage',m2c:'ketu-attaque-draupnir-blocage-2',sim:'ketu-draupnir',p:'Ketu dash sur un bord de la carte et vise un joueur marqué d\'un œil rouge. Quand il retire son arme du sol, une vague part : il faut sauter par-dessus.',tip:'Un CàC ciblé peut bloquer l\'attaque : la vague est alors annulée (2e clip).',warn:'Prendre la vague donne quelques secondes de débuff de résistance, souvent mortel.'},
+ {n:'Faux rouges',k:'Attaque 3',m:'ketu-attaque-faux-rouges',sim:'ketu-faux-rouges',p:'Deux attaques rouges d\'affilée, une à gauche puis une à droite. Rouges = ni esquive (même parfaite) ni blocage possibles.',tip:'Reste près du boss : elles t\'évitent facilement.'},
+ {n:'Orbes',k:'Attaque 4',m:'ketu-attaque-shugo',p:'Après une réplique du boss, deux orbes apparaissent au hasard sur la carte. Va au pied d\'une orbe et saute pour la récupérer.'},
+ {n:'Les faux',k:'Attaque 5',m:'ketu-attaque-faux-guidees',p:'Des faux apparaissent sur les joueurs, à distance du boss. Pas dangereuses seules, mais mortelles si une autre mécanique tombe en même temps.',tip:'Tue d\'abord les faux qui te suivent, puis suis le Clerc.'},
+ {n:'Lasers',k:'Attaque 6',m:'ketu-attaque-laser',sim:'ketu-lasers',p:'Ketu fait tourner sa faux d\'un côté : des lasers arrivent de ce côté, et il frappe en plus dans les 8 directions principales.',tip:'Mets ta caméra parallèle aux lasers. Derrière le boss, c\'est généralement safe.'},
+ {n:'Les yeux',k:'Attaque 7',m:'ketu-attaque-yeux',sim:'ketu-yeux',p:'Seulement après la 2e mécanique. Ketu disparaît et 3 yeux apparaissent l\'un après l\'autre. Œil rouge : le regarder. Œil bleu : lui tourner le dos. Jamais 3 fois la même couleur (R/B/R ou B/R/B). À la fin, cours à l\'endroit où était le boss : c\'est la safe zone.',tip:'En difficulté ? Ne gère qu\'une couleur : sur B/R/B, tourne le dos à tout et encaisse seulement le rouge.'}
+],
+p1:[
+ {n:'Cône',k:'Attaque 1',m:'ludra-phase-1-attaque-cone',p:'Un large cône de dégâts sur la cible du boss. On l\'esquive en allant sur le côté.'},
+ {n:'Laser',k:'Attaque 2',m:'ludra-phase-1-attaque-laser',p:'Rare, seulement si vous manquez de dégâts. Ludra charge un laser sur sa cible, puis tire en restant immobile ou en tournant.'},
+ {n:'Draupnir',k:'Attaque 3',m:'ludra-phase-1-attaque-draupnir',sim:'ludra-draupnir',p:'Ludra se lève et frappe le sol avec ses deux pattes. Chaque patte envoie une vague à sauter.',tip:'Du côté de la 2e patte, un seul saut passe les deux vagues. De l\'autre côté, il faut sauter deux fois.'},
+ {n:'Météorites',k:'Attaque 4',m:'ludra-phase-1-attaque-meteorites',p:'Ludra s\'envole et des météorites tombent sur la carte. On les esquive en courant ou on les bloque.'}
+],
+p2:[
+ {n:'Draupnir',k:'Attaque 1',m:'ludra-phase-2-attaque-draupnir',p:'Même principe qu\'en phase 1, avec en plus des AoE au corps à corps.'},
+ {n:'Zikel',k:'Attaque 2',m:'ludra-phase-2-attaque-zikel',sim:'ludra-zikel',p:'Ludra s\'envole loin de l\'arène. Il montre une zone, elle explose puis devient une safe zone qui protège des lasers. 4 étapes, toujours aux mêmes endroits : lasers depuis le bas, la gauche, la droite puis le haut. Groupe bleu à gauche, groupe rouge à droite, puis chacun tourne autour du centre d\'un Zikel à l\'autre.',tip:'Tu as le temps : inutile d\'entrer dans le Zikel trop tôt.',diag:['ludra-zikel','Zikel : les 4 étapes sur une image'],diag2:['ludra-zikel-anim','Zikel animé']},
+ {n:'Laser',k:'Attaque 3',m:'ludra-phase-2-attaque-laser',p:'Seulement si vous manquez de dégâts. Laser fixe ou qui tourne.',tip:'En dernier recours, on peut dash à travers le laser.'},
+ {n:'Éclairs ×2',k:'Attaque 4',m:'ludra-phase-2-attaque-eclairs-x2',p:'Ludra penche la tête d\'un côté puis frappe de l\'autre. Des éclairs tombent deux fois de suite sur les joueurs. À esquiver absolument, les CàC peuvent bloquer.',tip:'Les éclairs visent ta position d\'il y a quelques frames : bouge juste après l\'animation et tu es dehors.'},
+ {n:'Safezones',k:'Attaque 5',m:'ludra-phase-2-attaque-safezone',p:'Deux attaques consécutives, avec des safe zones toujours aux mêmes endroits.'}
+]};
+
+const MECH={
+rahu:[
+ {hp:'~80 %',hp2:'+ 30 % / 15 %',n:'Laser rouge',m:'rahu-mecanique-laser-rouge',sim:'rahu-laser',p:['Un joueur a un œil rouge au-dessus de la tête : le laser le vise.','Il se décale sur un des côtés de la safe zone, puis dash dedans vers 90 % de la barre de sort du boss, ou quand l\'attaque se fige.'],tip:'Va assez loin du boss (donc près du laser) : c\'est plus simple et tu évites de mettre le laser sur les autres.',warn:'Selon ton DPS, il peut revenir entre la mécanique principale et le Split Map, ou après la dernière mécanique.'},
+ {hp:'~60 %',n:'Mécanique principale',m:'rahu-mecanique-principale',sim:'rahu-principale',p:['Rahu se téléporte au centre, dos à l\'entrée. Les joueurs sont téléportés aux coins.','Rejoignez le centre au plus vite en esquivant. Un joueur reçoit une zone jaune : à la fin, tout le monde s\'y pack.'],list:['Entre au corps à corps puis tourne autour du boss dans le sens des aiguilles d\'une montre, entre les deux « pizzas ».','Classes mêlée : cours vers la zone et, quand le 1er cercle explose, dash directement au CàC.','Sans dash : attends au bord de la zone 2, laisse-la exploser, puis shift dedans sans dégâts.','En compo méta (Aède, Clerc), on peut aussi tout encaisser de face en tapant le boss.'],warn:'Ensuite, toujours : Bombardement (5 projectiles qui laissent des zones au sol, on se split), puis Laser en cône de 180° : va dans le dos du boss, le petit cône n\'y fait pas mal. Le cercle violet continue pendant tout ce temps.'},
+ {hp:'~40 %',n:'Split Map',m:'rahu-mecanique-split-map',sim:'rahu-split',p:['Rahu se téléporte au centre et coupe la carte en 4. Regroupez-vous dans un des quarts proches de votre point d\'arrivée.'],tip:'Suivez la personne qui porte le marqueur. Restez dans le coin le plus au bord, et pour le bombardement, séparez-vous le long de la zone de dégâts pour garder une grande safe zone au milieu.',warn:'Ensuite, toujours : Dash (le boss saute sur un joueur, peu de dégâts, restez packés), Bombardement, Cross, puis soit Laser 180°, soit Stack.'},
+ {hp:'~20 %',n:'Dernière mécanique',m:'rahu-derniere-mecanique',sim:'rahu-derniere',p:['Rahu se téléporte au centre et 4 monstres apparaissent au hasard. Un joueur a l\'œil rouge et est ciblé.','Il faut aligner le tir du boss sur un monstre pour le tuer. On n\'esquive pas : on encaisse.'],tip:'Reste au corps à corps et continue de taper. Les joueurs mêlée peuvent bloquer le tir.',warn:'Un monstre raté = une flaque violette.'}
+],
+ketu:[
+ {hp:'~80 %',n:'Mécanique principale',m:'ketu-mecanique-principale',sim:'ketu-principale',p:['Prenez le placement de la vue d\'ensemble. Ensuite :'],ol:['Ketu se téléporte au centre, une zone violette qui fait des dégâts apparaît sous lui.','Des fantômes apparaissent partout et des météorites tombent sur toute la carte.','Des lasers arrivent depuis le spawn : ils font mal et étourdissent.','Des triangles lumineux font le tour de la carte.'],p2:'Tuez tous les fantômes sans qu\'aucun ne touche un triangle : Fantôme Fear (7 coups) = fear sur toute la carte, Fantôme Destruction (2 coups) = dégâts sur toute la carte. À la fin, une fois dans la safe zone derrière le boss, allez sur l\'emplacement du boss : une zone qui augmente les soins reçus apparaît, le soigneur y donne tout.',tip:'Vous avez beaucoup de temps : concentrez-vous sur l\'esquive des lasers et des zones. Dans la zone de soin, prenez des potions pour soulager le Clerc.',warn:'Après cette mécanique, Ketu fait toujours l\'attaque des lasers.'},
+ {hp:'~50 %',n:'Mécanique principale 2',m:'ketu-mecanique-principale-2',p:['Exactement la même mécanique, avec les yeux en plus.','Quand les triangles lumineux sont à mi-chemin, 2 yeux apparaissent l\'un après l\'autre au niveau de la safe zone, de couleur aléatoire. Rouge : le regarder. Bleu : lui tourner le dos.']},
+ {hp:'~20 %',n:'Last Mech',m:'ketu-mecanique-principale-3',sim:'ketu-last',p:['Ketu se téléporte au centre. D\'énormes triangles rouges apparaissent sur les joueurs, avec de petites météorites.','Packez-vous, généralement vers le spawn. Quand les triangles se figent, dash sur un côté et cours vers les cristaux apparus.','Tape un cristal AU CORPS À CORPS pour quelques secondes d\'invulnérabilité et encaisse les vagues de dégâts.'],tip:'2 cristaux suffisent : le 1er dès que possible, le 2e quelques secondes plus tard (ça relance le bonus, ça ne le prolonge pas). Les triangles se figent vers 4,5 s sur la barre de cast du boss.',warn:'Ensuite Ketu entre en rage : les lasers 2 fois d\'affilée, des AoE en continu.'}
+],
+p1:[
+ {hp:'100→50 %',n:'Œil rouge',m:'ludra-phase-1-mecanique-oeil-rouge',sim:'ludra-oeil',p:['Ludra la refait en boucle jusqu\'à 50 %.','Les orbes : les bleues apparaissent au hasard hors de l\'arène, on les prend avec un saut à leur pied. La rouge apparaît devant le boss, derrière le tank : elle doit être interceptée avec un BLOCAGE.','L\'œil rouge, en 6 temps :'],ol:['La carte rétrécit. Un joueur a l\'œil rouge : il est la cible du boss jusqu\'à la fin (s\'il meurt, un autre le reprend).','Ludra saute : des tornades partent vers l\'extérieur (dégâts et projection en l\'air) et des orbes bleues apparaissent, à récupérer.','Ludra se tourne vers la cible de l\'œil rouge et fait un énorme cône.','Il frappe le sol et des zones jaunes suivent les joueurs. Très dangereux avec peu de gear : CD défensifs (shield du tank, Aède…), blocage pour les CàC, esquive parfaite pour les distances.','Nouveau saut, avec tornades et orbes bleues.','Nouveau cône sur la cible de l\'œil rouge.'],p2:'Pour finir, une énorme attaque prend tout le centre : soyez prêts à sortir et dash out dès que la zone extérieure est terminée.',tip:'Cible de l\'œil rouge : reste près du boss, annonce-toi en vocal et tourne le boss vers une zone sans orbes bleues. Assassin et Rôdeur peuvent esquiver avec leur backstab. Les distances peuvent taper pendant la dernière étape en restant près de la zone.',warn:'Au réatterrissage, attaque spéciale CROSS : évite les points cardinaux du boss, mets-toi dans les diagonales.'},
+ {hp:'~50 %',n:'Shugo',m:'ludra-phase-1-mecanique-shugo',sim:'ludra-shugo1',diag:['ludra-shugo-p1','Shugo phase 1 : placement « parfait » à 10'],p:['Météorites, puis Ludra disparaît dans un portail. Le sol devient une grille de cases.','Les météorites tombent sur les joueurs et éclairent les cases. Il faut trouver la case sûre en découvrant un maximum de cases. Les zones jaunes suivent les joueurs avant de se figer : soit tu cours en cercle et sors de la case quand la zone se fige, soit tu restes immobile et tu shift dash vers la case suivante quand elle est chargée à 80 % ou plus.','Pendant ce temps, 2 lasers qui one-shot traversent le milieu des cases : commencez par les cases du centre pour les libérer avant.','CàC sur les cases intérieures, distances sur l\'extérieur. Les bloqueurs (B) font leurs 3 cases le long du bord, vont bloquer l\'orbe extérieure, puis reviennent sur leur case. Les deux joueurs du carré central font juste un quart de tour. Bloqueurs en trop : sur les bords, en backup.','Quand la case sûre est trouvée (elle brille plus que les autres), tout le monde y entre avant l\'explosion de la météorite géante. Ludra est alors KO quelques secondes : grosse fenêtre de dégâts.'],tip:'À 3 s de la fin du timer, tu peux déjà sortir de la safe zone pour taper le boss.',warn:'Seulement 2 cases avant que le laser touche le milieu : ne pose jamais une météorite avant le laser. Attends la fin du laser pour entrer dans la case sûre, et attention aux météorites des autres en y allant.'}
+],
+p2:[
+ {hp:'Cycle',n:'Les orbes',m:'ludra-phase-2-mecanique-orbes',sim:'ludra-p2-orbes',diag:['ludra-p2-orbes','Orbes en phase 2 : 3 devant, 2 derrière'],p:['5 orbes à chaque fois : 3 devant, 2 derrière. Celle du milieu devant est rouge et demande un blocage, les autres sont bleues et se prennent normalement.','Pendant cette mécanique, Ludra fait un Draupnir.'],tip:'Le joueur de l\'orbe rouge encaisse le 1er Draupnir, bloque l\'orbe, puis saute directement la 2e vague.'},
+ {hp:'~35 %',hp2:'jusqu\'à la fin',n:'Les couleurs',m:'ludra-phase-2-mecanique-couleurs',sim:'ludra-couleurs',diag:['ludra-p2-couleurs','Bleus à gauche, rouges à droite'],p:['Ludra fait apparaître de grandes orbes dans ses pattes, et chaque joueur reçoit 3 petites orbes rouges ou bleues qui tournent autour de lui.','On reprend la disposition des couleurs du boss : bleu à gauche, rouge à droite.'],tip:'Dès que les orbes apparaissent, cours de ton côté le plus vite possible pour limiter les dégâts des liens.',warn:'Si Ludra change de place, gardez le même placement, SAUF s\'il part à l\'opposé de la carte : chaque équipe reste alors de son côté.'},
+ {hp:'~25 %',n:'Shugo (phase 2)',m:'ludra-phase-2-mecanique-shugo',sim:'ludra-shugo2',diag:['ludra-shugo-p2','Shugo phase 2'],diag2:['ludra-shugo-p2-variante','Variante des bloqueurs'],p:['Même principe qu\'en phase 1, mais plusieurs vagues de Draupnir remplacent les lasers.','Nouveau placement : chaque bloqueur part de son coin, fait sa case puis la voisine, va bloquer l\'orbe du coin et revient sur sa case. Variante : partir de la case voisine du coin, faire la case du coin, bloquer l\'orbe, revenir.'],tip:'Garde le boss dans ton champ de caméra pour voir arriver les Draupnir. Entre esquiver un Draupnir et une météorite, choisis le Draupnir.',warn:'Après le stagger, Ludra passe enragé et attaque beaucoup plus.'},
+ {hp:'~10 %',n:'Zones de couleurs',m:'ludra-phase-2-mecanique-zones-de-couleurs',sim:'ludra-zones',p:['Des zones apparaissent. Place-toi près d\'une zone de ta couleur, attends environ 1,5 s sur la barre de sort du boss, puis entre dedans.','Une seule personne par zone.']}
+]};
+
+/* ===== title, marquee, glow, hp ===== */
+const T=$('#title');T.innerHTML=[...T.textContent].map((c,i)=>`<span class="ch" style="--i:${i}" aria-hidden="true">${c}</span>`).join('');
+const MQ=[['Cross','Rahu'],['Cercle violet','Rahu'],['Split Map','Rahu 40 %'],['Draupnir','Ketu'],['Les yeux','Ketu'],['Triangles lumineux','Ketu'],['Œil rouge','Ludra P1'],['Shugo','Ludra 50 %'],['Zikel','Ludra P2'],['Couleurs','Ludra 35 %'],['Zones de couleurs','Ludra 10 %']];
+const mh=MQ.map(([a,b])=>`<span>${a}<em>${b}</em></span>`).join('');$('#mq').innerHTML=mh+mh;
+const cg=$('#cursorGlow');if(!RM&&matchMedia('(pointer:fine)').matches)addEventListener('pointermove',e=>{cg.style.transform=`translate(${e.clientX}px,${e.clientY}px)`},{passive:true});
+const hpFill=$('#hpFill'),hpTxt=$('#hpTxt'),navLinks=[...document.querySelectorAll('#nav a')],secs=navLinks.map(a=>document.querySelector(a.getAttribute('href')));
+function onScroll(){const max=document.documentElement.scrollHeight-innerHeight,p=max>0?Math.min(1,scrollY/max):0,hp=Math.max(0,Math.round(100-p*100));hpFill.style.width=hp+'%';hpTxt.textContent='LUDRA · '+hp+' %';let cur=-1;secs.forEach((s,i)=>{if(s&&s.getBoundingClientRect().top<innerHeight*.35)cur=i});navLinks.forEach((a,i)=>a.classList.toggle('cur',i===cur))}
+addEventListener('scroll',onScroll,{passive:true});onScroll();
+
+/* hero embers + lightning over the art */
+(function(){const cv=$('#heroCv'),ctx=cv.getContext('2d');let W,H,parts=[],bolt=null,nb=2,last=0,vis=true;
+ function size(){const d=Math.min(devicePixelRatio||1,2);W=cv.clientWidth;H=cv.clientHeight;cv.width=W*d;cv.height=H*d;ctx.setTransform(d,0,0,d,0,0);parts=Array.from({length:Math.round(W*H/11000)},()=>({x:Math.random()*W,y:Math.random()*H,v:10+Math.random()*30,r:Math.random()*1.6+.3,h:Math.random()<.5,o:Math.random()}))}
+ function mk(){let x=W*(.5+Math.random()*.45),y=0;const p=[[x,y]];while(y<H*.6){y+=12+Math.random()*26;x+=(Math.random()-.5)*46;p.push([x,y])}return{p,l:.45}}
+ function draw(t,dt){ctx.clearRect(0,0,W,H);for(const q of parts){q.y-=q.v*dt;q.x+=Math.sin(t+q.o*6)*6*dt;if(q.y<-5){q.y=H+5;q.x=Math.random()*W}ctx.fillStyle=q.h?`rgba(170,130,255,${.2+.35*q.o})`:`rgba(255,150,90,${.2+.3*q.o})`;ctx.beginPath();ctx.arc(q.x,q.y,q.r,0,7);ctx.fill()}
+  if(bolt){const a=bolt.l/.45;ctx.fillStyle=`rgba(190,170,255,${.08*a})`;ctx.fillRect(0,0,W,H);ctx.strokeStyle=`rgba(225,215,255,${a})`;ctx.shadowColor='#a98bff';ctx.shadowBlur=18;ctx.lineWidth=2;ctx.beginPath();bolt.p.forEach(([x,y],i)=>i?ctx.lineTo(x,y):ctx.moveTo(x,y));ctx.stroke();ctx.shadowBlur=0}}
+ function loop(ts){const t=ts/1000,dt=Math.min(.05,t-(last||t));last=t;if(vis){nb-=dt;if(nb<0){bolt=mk();nb=4+Math.random()*5}if(bolt){bolt.l-=dt;if(bolt.l<=0)bolt=null}draw(t,dt)}requestAnimationFrame(loop)}
+ size();addEventListener('resize',size);new IntersectionObserver(e=>{vis=e[0].isIntersecting}).observe(cv);if(!RM)requestAnimationFrame(loop)})();
+
+/* ===== render sections ===== */
+const clipHTML=(m,c)=>`<figure class="clip" tabindex="0" role="button" aria-label="Lire le clip" data-clip="media/${c||m}.mp4"><img src="img/${m}.webp" alt="" loading="lazy"><span class="pb">▶</span><span class="src">guidemmo.com</span></figure>`;
+const diagHTML=d=>d?`<figure class="diag"><img src="img/${d[0]}.webp" alt="${d[1]}" loading="lazy"><figcaption>${d[1]} · schéma guidemmo.com</figcaption></figure>`:'';
+const simBtn=s=>s?`<div class="acts"><button class="btn sm" type="button" data-sim="${s}">▶ Voir en 3D</button></div>`:'';
+function renderAtk(el,list){el.innerHTML=list.map(a=>`<article class="atk">${a.m?clipHTML(a.m):''}${a.m2?clipHTML(a.m2,a.m2c):''}<h4>${a.n}<small>${a.k.toUpperCase()}</small></h4><p>${a.p}</p>${a.tip?`<div class="tip"><b>Astuce</b>${a.tip}</div>`:''}${a.warn?`<div class="warn"><b>Attention</b>${a.warn}</div>`:''}${diagHTML(a.diag)}${diagHTML(a.diag2)}${simBtn(a.sim)}</article>`).join('')}
+function renderTl(el,list,key){el.innerHTML=list.map((m,i)=>`<div class="tl-item" id="m-${key}-${i}"><span class="tl-bar">${m.hp}</span><div class="tl-txt"><h3>${m.n}${m.hp2?` <span class="ko">${m.hp2}</span>`:''}</h3>${m.p.map(x=>`<p>${x}</p>`).join('')}${m.ol?`<ol>${m.ol.map(x=>`<li>${x}</li>`).join('')}</ol>`:''}${m.list?`<ul>${m.list.map(x=>`<li>${x}</li>`).join('')}</ul>`:''}${m.p2?`<p>${m.p2}</p>`:''}${m.tip?`<div class="tip"><b>Astuce</b>${m.tip}</div>`:''}${m.warn?`<div class="warn"><b>Attention</b>${m.warn}</div>`:''}${simBtn(m.sim)}</div><div class="tl-media">${clipHTML(m.m)}${diagHTML(m.diag)}${diagHTML(m.diag2)}</div></div>`).join('')}
+function renderRail(el,marks,key){el.innerHTML=`<div class="rail-bar">${marks.map(([pct,lbl,idx],k)=>`<a class="mk${k%2?' lo':''}${pct>=85?' end':pct<=15?' start':''}" href="#m-${key}-${idx}" style="left:${pct}%"><span>${lbl}</span></a>`).join('')}</div><div class="rail-ends"><span>0 %</span><span>PV du boss</span><span>100 %</span></div>`}
+renderAtk($('#atkRahu'),ATK.rahu);renderAtk($('#atkKetu'),ATK.ketu);renderAtk($('#atkP1'),ATK.p1);renderAtk($('#atkP2'),ATK.p2);
+renderTl($('#tlRahu'),MECH.rahu,'rahu');renderTl($('#tlKetu'),MECH.ketu,'ketu');renderTl($('#tlP1'),MECH.p1,'p1');renderTl($('#tlP2'),MECH.p2,'p2');
+renderRail($('#railRahu'),[[80,'Laser 80',0],[60,'Principale 60',1],[40,'Split 40',2],[30,'Laser 30',0],[20,'Dernière 20',3],[15,'Laser 15',0]],'rahu');
+renderRail($('#railKetu'),[[80,'Principale 80',0],[50,'Principale 2 · 50',1],[20,'Last Mech 20',2]],'ketu');
+renderRail($('#railP1'),[[100,'Œil rouge en boucle',0],[50,'Shugo 50',1]],'p1');
+renderRail($('#railP2'),[[50,'Orbes',0],[35,'Couleurs 35',1],[25,'Shugo 25',2],[10,'Zones 10',3]],'p2');
+
+/* clip players + lightbox */
+function playClip(f){if(f.classList.contains('playing'))return;const v=document.createElement('video');v.src=f.dataset.clip;v.controls=true;v.autoplay=true;v.muted=true;v.loop=true;v.playsInline=true;f.appendChild(v);f.classList.add('playing');v.play&&v.play().catch(()=>{})}
+document.addEventListener('click',e=>{const f=e.target.closest('.clip');if(f){playClip(f);return}
+ const d=e.target.closest('.diag img');if(d){const lb=document.createElement('div');lb.className='lightbox';lb.innerHTML=`<img src="${d.getAttribute('src')}" alt="${d.alt}">`;lb.addEventListener('click',()=>lb.remove());document.body.appendChild(lb)}});
+document.addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&e.target.classList&&e.target.classList.contains('clip')){e.preventDefault();playClip(e.target)}if(e.key==='Escape'){const lb=$('.lightbox');if(lb)lb.remove()}});
+
+/* ===== 3D ARENA ===== */
+const canvas=$('#arena');
+if(!window.THREE){canvas.outerHTML='<div class="nogl">L\'arène 3D n\'a pas pu se charger. Les explications, clips et schémas restent disponibles plus bas.</div>';return}
+let renderer;try{renderer=new THREE.WebGLRenderer({canvas,antialias:true})}catch(e){canvas.outerHTML='<div class="nogl">WebGL n\'est pas disponible sur cet appareil. Les explications, clips et schémas restent disponibles plus bas.</div>';return}
+renderer.setPixelRatio(Math.min(devicePixelRatio||1,2));
+const scene=new THREE.Scene();scene.background=new THREE.Color(0x0d0b10);scene.fog=new THREE.Fog(0x0d0b10,45,95);
+const camera=new THREE.PerspectiveCamera(45,2,.1,250);
+const controls=new THREE.OrbitControls(camera,canvas);controls.enableDamping=true;controls.maxPolarAngle=Math.PI*.49;controls.minDistance=10;controls.maxDistance=80;
+scene.add(new THREE.HemisphereLight(0x9a8cc8,0x1a1420,.95));const dl=new THREE.DirectionalLight(0xffe2b0,.85);dl.position.set(-10,25,12);scene.add(dl);
+const R=18,deg=Math.PI/180;
+const C={death:0xff3b3b,kd:0xf2cf3c,safe:0x3fd77a,red:0xff5a4a,blue:0x4aa8ff,void:0xa35cff,gold:0xd4a85a,tank:0xd4a85a,heal:0x3fd77a,dps:0x8fd3bf,white:0xece5d7};
+function dialTex(square){const s=1024,c=document.createElement('canvas');c.width=c.height=s;const x=c.getContext('2d');
+ const g=x.createRadialGradient(s/2,s/2,0,s/2,s/2,s*.7);g.addColorStop(0,'#241e2d');g.addColorStop(.8,'#17131c');g.addColorStop(1,'#0e0b12');x.fillStyle=g;x.fillRect(0,0,s,s);
+ x.strokeStyle='rgba(212,168,90,.12)';x.lineWidth=2;
+ if(square){for(let i=1;i<6;i++){x.beginPath();x.moveTo(i*s/6,0);x.lineTo(i*s/6,s);x.moveTo(0,i*s/6);x.lineTo(s,i*s/6);x.stroke()}x.strokeStyle='rgba(212,168,90,.06)';for(let i=1;i<12;i+=2){x.beginPath();x.moveTo(i*s/12,0);x.lineTo(i*s/12,s);x.moveTo(0,i*s/12);x.lineTo(s,i*s/12);x.stroke()}}
+ else{for(let i=1;i<=6;i++){x.beginPath();x.arc(s/2,s/2,s/2*i/6.2,0,7);x.stroke()}for(let i=0;i<8;i++){const a=i*45*deg;x.beginPath();x.moveTo(s/2,s/2);x.lineTo(s/2+Math.sin(a)*s*.49,s/2+Math.cos(a)*s*.49);x.stroke()}}
+ const t=new THREE.CanvasTexture(c);t.anisotropy=4;return t}
+const floorC=new THREE.Group(),floorS=new THREE.Group();scene.add(floorC,floorS);
+floorC.add(new THREE.Mesh(new THREE.CircleGeometry(R,96).rotateX(-Math.PI/2),new THREE.MeshStandardMaterial({map:dialTex(false),roughness:.9})));
+const ec=new THREE.Mesh(new THREE.RingGeometry(R,R+.35,128).rotateX(-Math.PI/2),new THREE.MeshBasicMaterial({color:0x4a7ac4}));ec.position.y=.02;floorC.add(ec);
+const uc=new THREE.Mesh(new THREE.CylinderGeometry(R+.35,R-2,3,96,1,true),new THREE.MeshStandardMaterial({color:0x120f18,side:THREE.DoubleSide}));uc.position.y=-1.5;floorC.add(uc);
+floorS.add(new THREE.Mesh(new THREE.PlaneGeometry(2*R,2*R).rotateX(-Math.PI/2),new THREE.MeshStandardMaterial({map:dialTex(true),roughness:.9})));
+const es=new THREE.Mesh(new THREE.BoxGeometry(2*R+.7,1.2,2*R+.7),new THREE.MeshStandardMaterial({color:0x120f18}));es.position.y=-.61;floorS.add(es);
+const esl=new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.PlaneGeometry(2*R,2*R).rotateX(-Math.PI/2)),new THREE.LineBasicMaterial({color:0x7b5cc4}));esl.position.y=.03;floorS.add(esl);
+for(let i=0;i<8;i++){const a=(i*45+22.5)*deg,p=new THREE.Mesh(new THREE.CylinderGeometry(.6,.8,9,6),new THREE.MeshStandardMaterial({color:0x221b2c,roughness:.8}));p.position.set(Math.sin(a)*(R+6),2.5,Math.cos(a)*(R+6));scene.add(p);const f=new THREE.Mesh(new THREE.SphereGeometry(.35,10,8),new THREE.MeshBasicMaterial({color:i%2?0x4aa8ff:0xa35cff}));f.position.set(p.position.x,7.4,p.position.z);scene.add(f)}
+
+const glowTex=(()=>{const c=document.createElement('canvas');c.width=c.height=64;const x=c.getContext('2d');const g=x.createRadialGradient(32,32,0,32,32,32);g.addColorStop(0,'rgba(255,255,255,1)');g.addColorStop(.3,'rgba(255,255,255,.45)');g.addColorStop(1,'rgba(255,255,255,0)');x.fillStyle=g;x.fillRect(0,0,64,64);return new THREE.CanvasTexture(c)})();
+function glow(color,size){const s=new THREE.Sprite(new THREE.SpriteMaterial({map:glowTex,color,transparent:true,blending:THREE.AdditiveBlending,depthWrite:false}));s.scale.set(size,size,1);return s}
+function textSprite(text,color='#ece5d7',bg='rgba(11,10,14,.78)',scale=1){const c=document.createElement('canvas');c.width=256;c.height=96;const x=c.getContext('2d'),tex=new THREE.CanvasTexture(c);
+ const sp=new THREE.Sprite(new THREE.SpriteMaterial({map:tex,transparent:true,depthTest:false}));sp.renderOrder=10;sp.scale.set(2.4*scale,.9*scale,1);
+ sp.setText=(t,col)=>{if(sp._t===t&&sp._c===col)return;sp._t=t;sp._c=col;x.clearRect(0,0,256,96);x.font='700 42px Golos Text, Segoe UI, sans-serif';const w=Math.min(250,x.measureText(t).width+28);if(bg){x.fillStyle=bg;x.beginPath();x.roundRect?x.roundRect(128-w/2,20,w,56,14):x.rect(128-w/2,20,w,56);x.fill()}x.fillStyle=col||color;x.textAlign='center';x.textBaseline='middle';x.fillText(t,128,50);tex.needsUpdate=true};
+ sp.setText(text);return sp}
+const mat=(color,o=.3)=>new THREE.MeshBasicMaterial({color,transparent:true,opacity:o,depthWrite:false,side:THREE.DoubleSide});
+function std(c,e=0,ei=0){return new THREE.MeshStandardMaterial({color:c,roughness:.55,metalness:.25,emissive:e,emissiveIntensity:ei})}
+
+/* bosses */
+function mkLudra(){const g=new THREE.Group(),body=new THREE.Group();g.add(body);
+ const b=new THREE.Mesh(new THREE.SphereGeometry(1.7,20,16),std(0x241a33,0x2a1450,.9));b.scale.set(1,.85,1.6);b.position.y=2.3;body.add(b);
+ const chest=glow(0xb48cff,2.8);chest.position.set(0,2.3,2);body.add(chest);
+ const neck=new THREE.Mesh(new THREE.CylinderGeometry(.42,.72,2.4,10),std(0x241a33));neck.rotation.x=.9;neck.position.set(0,3.4,2.3);body.add(neck);
+ const head=new THREE.Mesh(new THREE.ConeGeometry(.68,2.1,6),std(0x2e2244,0x3a1a70,.8));head.rotation.x=Math.PI/2;head.position.set(0,4.3,3.7);body.add(head);
+ [-1,1].forEach(s=>{const e=new THREE.Mesh(new THREE.SphereGeometry(.13,8,6),new THREE.MeshBasicMaterial({color:0xc9a8ff}));e.position.set(.3*s,4.52,3.4);body.add(e);
+  for(let k=0;k<3;k++){const h=new THREE.Mesh(new THREE.ConeGeometry(.12,1,6),std(0x1a1424));h.position.set((.25+k*.12)*s,4.8-k*.15,3-k*.4);h.rotation.x=-1.0;body.add(h)}
+  const leg=new THREE.Mesh(new THREE.CylinderGeometry(.3,.38,1.6,8),std(0x1c1428));leg.position.set(1.05*s,.8,1.1);body.add(leg);const l2=leg.clone();l2.position.z=-1.2;body.add(l2)});
+ const tail=new THREE.Mesh(new THREE.ConeGeometry(.55,4.2,8),std(0x241a33));tail.rotation.x=-Math.PI/2+.25;tail.position.set(0,1.6,-3.9);body.add(tail);
+ const ws=new THREE.Shape();ws.moveTo(0,0);ws.lineTo(5,2.4);ws.lineTo(4.4,-.2);ws.lineTo(3.2,.5);ws.lineTo(2.5,-1.1);ws.lineTo(1.3,-.2);ws.lineTo(.6,-1.3);ws.closePath();
+ const wm=new THREE.MeshStandardMaterial({color:0x2a1d44,emissive:0x6a3ad0,emissiveIntensity:.45,side:THREE.DoubleSide,transparent:true,opacity:.92});
+ const wl=new THREE.Mesh(new THREE.ShapeGeometry(ws),wm);wl.position.set(.7,3.1,.2);body.add(wl);const wr=wl.clone();wr.scale.x=-1;wr.position.x=-.7;body.add(wr);
+ const oR=new THREE.Group(),oB=new THREE.Group();oR.add(new THREE.Mesh(new THREE.SphereGeometry(.55,16,12),new THREE.MeshBasicMaterial({color:C.red})),glow(C.red,3.4));oB.add(new THREE.Mesh(new THREE.SphereGeometry(.55,16,12),new THREE.MeshBasicMaterial({color:C.blue})),glow(C.blue,3.4));
+ oR.position.set(2,2.7,1.7);oB.position.set(-2,2.7,1.7);oR.visible=oB.visible=false;body.add(oR,oB);
+ g.userData={body,hands:[oR,oB],tick(t){wl.rotation.y=-.25-.18*Math.sin(t*2.2);wr.rotation.y=.25+.18*Math.sin(t*2.2);chest.material.opacity=.7+.3*Math.sin(t*3)}};return g}
+function mkWarrior(col,acc,weapon,wings){const g=new THREE.Group(),body=new THREE.Group();g.add(body);
+ const torso=new THREE.Mesh(new THREE.CylinderGeometry(.9,1.2,2.6,10),std(col,acc,.25));torso.position.y=2.6;body.add(torso);
+ const hips=new THREE.Mesh(new THREE.CylinderGeometry(1.2,1.4,1.4,10),std(col));hips.position.y=.9;body.add(hips);
+ const head=new THREE.Mesh(new THREE.SphereGeometry(.65,16,12),std(col,acc,.3));head.position.y=4.3;body.add(head);
+ const eye=glow(acc,1.4);eye.position.set(0,4.35,.6);body.add(eye);
+ [-1,1].forEach(s=>{const sh=new THREE.Mesh(new THREE.SphereGeometry(.55,12,10),std(0x2a2433,acc,.2));sh.position.set(1.15*s,3.6,0);body.add(sh);const arm=new THREE.Mesh(new THREE.CylinderGeometry(.28,.34,2,8),std(col));arm.position.set(1.35*s,2.6,.4);arm.rotation.x=-.5;body.add(arm)});
+ const wpn=new THREE.Group();
+ if(weapon==='sword'){const bl=new THREE.Mesh(new THREE.BoxGeometry(.35,4.8,.1),std(0xd9d2c4,acc,.35));bl.position.y=2.6;const gd=new THREE.Mesh(new THREE.BoxGeometry(1.2,.2,.3),std(0x8a6a3a));gd.position.y=.2;wpn.add(bl,gd);wpn.position.set(0,2,1.5);wpn.rotation.x=.5}
+ else{const sh=new THREE.Mesh(new THREE.CylinderGeometry(.08,.08,5.2,6),std(0x3a3a48));sh.position.y=2.6;const bs=new THREE.Shape();bs.moveTo(0,0);bs.quadraticCurveTo(1.6,.6,2.6,-.8);bs.quadraticCurveTo(1.4,-.1,0,-.4);bs.closePath();const bld=new THREE.Mesh(new THREE.ShapeGeometry(bs),new THREE.MeshStandardMaterial({color:0xcfe6ff,emissive:acc,emissiveIntensity:.6,side:THREE.DoubleSide}));bld.position.set(0,5.1,0);wpn.add(sh,bld);wpn.position.set(1.6,.6,.8)}
+ body.add(wpn);let wl=null,wr=null;
+ if(wings){const ws=new THREE.Shape();ws.moveTo(0,0);ws.lineTo(4.6,3);ws.lineTo(4.2,.6);ws.lineTo(3.2,.9);ws.lineTo(2.8,-1.2);ws.lineTo(1.3,-.3);ws.closePath();const wm=new THREE.MeshStandardMaterial({color:0x163a52,emissive:acc,emissiveIntensity:.4,side:THREE.DoubleSide,transparent:true,opacity:.85});wl=new THREE.Mesh(new THREE.ShapeGeometry(ws),wm);wl.position.set(.4,3.3,-.6);body.add(wl);wr=wl.clone();wr.scale.x=-1;wr.position.x=-.4;body.add(wr)}
+ g.traverse(o=>{if(o.isMesh)o.material.transparent=true});
+ g.userData={body,tick(t){eye.material.opacity=.6+.4*Math.sin(t*4);if(wl){wl.rotation.y=-.3-.22*Math.sin(t*2.4);wr.rotation.y=.3+.22*Math.sin(t*2.4)}}};return g}
+const BOSSES={ludra:mkLudra(),rahu:mkWarrior(0x3a1a14,0xff3b3b,'sword',false),ketu:mkWarrior(0x142a33,0x4aa8ff,'scythe',true)};
+Object.values(BOSSES).forEach(b=>{b.visible=false;scene.add(b)});
+const stunLbl=textSprite('KO','#f2cf3c','rgba(11,10,14,.85)',1.1);stunLbl.visible=false;scene.add(stunLbl);
+const stars=new THREE.Group();for(let i=0;i<5;i++){const s=glow(0xf2cf3c,.9);s.position.set(Math.sin(i*1.26)*1.4,0,Math.cos(i*1.26)*1.4);stars.add(s)}stars.visible=false;scene.add(stars);
+
+/* players */
+function mkPlayer(role,name){const g=new THREE.Group(),col=C[role],m=std(col,col,.25);
+ const bm=new THREE.Mesh(new THREE.CylinderGeometry(.32,.38,1.05,12),m);bm.position.y=.55;g.add(bm);
+ const hd=new THREE.Mesh(new THREE.SphereGeometry(.3,12,10),m);hd.position.y=1.3;g.add(hd);
+ const nose=new THREE.Mesh(new THREE.ConeGeometry(.12,.35,8),m);nose.rotation.x=Math.PI/2;nose.position.set(0,1.3,.38);g.add(nose);
+ const base=new THREE.Mesh(new THREE.RingGeometry(.45,.6,24).rotateX(-Math.PI/2),mat(col,.8));base.position.y=.03;g.add(base);
+ const aura=new THREE.Mesh(new THREE.CircleGeometry(.9,24).rotateX(-Math.PI/2),mat(0xffffff,.5));aura.position.y=.025;aura.visible=false;g.add(aura);
+ const hurt=glow(0xff3b3b,3);hurt.position.y=.9;hurt.visible=false;g.add(hurt);
+ const shield=new THREE.Mesh(new THREE.SphereGeometry(1.05,16,12),new THREE.MeshBasicMaterial({color:0xf2cf3c,transparent:true,opacity:.35,wireframe:true}));shield.position.y=.8;shield.visible=false;g.add(shield);
+ const lbl=textSprite(name,'#'+col.toString(16).padStart(6,'0'),'rgba(11,10,14,.72)',.75);lbl.position.y=2.15;g.add(lbl);
+ g.userData={role,name,col,aura,hurt,shield,lbl};return g}
+const ROLES10=[['tank','T'],['heal','H1'],['heal','H2'],['dps','D1'],['dps','D2'],['dps','D3'],['dps','D4'],['dps','D5'],['dps','D6'],['dps','D7']];
+const ROLES5=[['tank','T'],['heal','AE'],['heal','CL'],['dps','D1'],['dps','D2']];
+const P10=ROLES10.map(([r,n])=>mkPlayer(r,n)),P5=ROLES5.map(([r,n])=>mkPlayer(r,n));[...P10,...P5].forEach(p=>{p.visible=false;scene.add(p)});
+
+const pol=(r,a)=>[r*Math.sin(a*deg),r*Math.cos(a*deg)];
+const OFF=[[0,0],[1,.4],[-1,.4],[.55,-.9],[-.55,-.9],[1.7,-.5],[-1.7,-.5],[0,1.3],[1.3,1.4],[-1.3,1.4]];
+const stack=(x,z,n=5)=>OFF.slice(0,n).map(([a,b])=>[x+a,z+b]);
+const ss=x=>x<=0?0:x>=1?1:x*x*(3-2*x),clamp01=x=>Math.max(0,Math.min(1,x));
+function samplePath(path,t){if(t<=path[0].t)return path[0];
+ for(let k=1;k<path.length;k++){const a=path[k-1],b=path[k];if(t<=b.t){const u=b.t>a.t?ss((t-a.t)/(b.t-a.t)):1;return{x:a.x+(b.x-a.x)*u,z:a.z+(b.z-a.z)*u,yaw:a.yaw!=null&&b.yaw!=null?a.yaw+(b.yaw-a.yaw)*u:b.yaw,y:(b.arc||0)*Math.sin(Math.PI*u)}}}
+ const l=path[path.length-1];return{x:l.x,z:l.z,yaw:l.yaw,y:0}}
+const dyn=new THREE.Group();scene.add(dyn);
+function clearDyn(){dyn.traverse(o=>{if(o.geometry)o.geometry.dispose()});dyn.clear()}
+function shapeGeo(type,o){
+ if(type==='circle')return new THREE.CircleGeometry(o.r,64).rotateX(-Math.PI/2);
+ if(type==='ring')return new THREE.RingGeometry(o.r0,o.r1,96).rotateX(-Math.PI/2);
+ if(type==='sector'){const h=o.ang/2*deg;return new THREE.CircleGeometry(o.r,48,-Math.PI/2-h,2*h).rotateX(-Math.PI/2)}
+ if(type==='arc'){const h=o.ang/2*deg;return new THREE.RingGeometry(o.r0,o.r1,48,1,-Math.PI/2-h,2*h).rotateX(-Math.PI/2)}
+ if(type==='rect')return new THREE.PlaneGeometry(o.w,o.l).rotateX(-Math.PI/2).translate(0,0,o.l/2);
+ if(type==='box')return new THREE.PlaneGeometry(o.w,o.d).rotateX(-Math.PI/2);
+ if(type==='frame'){const s=new THREE.Shape();s.moveTo(-o.h1,-o.h1);s.lineTo(o.h1,-o.h1);s.lineTo(o.h1,o.h1);s.lineTo(-o.h1,o.h1);s.closePath();const h=new THREE.Path();h.moveTo(-o.h0,-o.h0);h.lineTo(-o.h0,o.h0);h.lineTo(o.h0,o.h0);h.lineTo(o.h0,-o.h0);h.closePath();s.holes.push(h);return new THREE.ShapeGeometry(s).rotateX(-Math.PI/2)}
+ if(type==='tri'){const s=new THREE.Shape();s.moveTo(0,-o.l);s.lineTo(o.w/2,0);s.lineTo(-o.w/2,0);s.closePath();return new THREE.ShapeGeometry(s).rotateX(Math.PI/2)}
+}
+
+/* scheme engine */
+let S=null,cur=null,time=0,playing=true,speed=1,labelsOn=true,capIdx=-1;
+function makeS(sc){
+ const party=sc.party===5?P5:P10;
+ const st={party,paths:[],jumps:[],teles:[],updates:[],hurts:[],auras:[],shields:[],icons:[],bossPath:null,boss:BOSSES[sc.boss],gaugeFn:null,stun:null,waves:[],face:null,bossHide:null};
+ const start=sc.start;party.forEach((p,i)=>{st.paths[i]=[{t:0,x:start[i][0],z:start[i][1]}];st.jumps[i]=[]});
+ const b0=sc.bossStart||{x:0,z:0,yaw:0};st.bossPath=[{t:0,x:b0.x,z:b0.z,yaw:b0.yaw*deg}];
+ const api={
+  m(i,t0,t1,x,z){const p=st.paths[i],l=p[p.length-1];p.push({t:t0,x:l.x,z:l.z},{t:t1,x,z})},
+  tp(i,t,x,z){const p=st.paths[i],l=p[p.length-1];p.push({t,x:l.x,z:l.z},{t:t+.02,x,z})},
+  jump(i,t){st.jumps[i].push(t)},
+  bm(t0,t1,x,z,yaw,arc){const p=st.bossPath,l=p[p.length-1];p.push({t:t0,x:l.x,z:l.z,yaw:l.yaw},{t:t1,x,z,yaw:yaw*deg,arc:arc||0})},
+  btp(t,x,z,yaw){const p=st.bossPath,l=p[p.length-1];p.push({t,x:l.x,z:l.z,yaw:l.yaw},{t:t+.02,x,z,yaw:yaw*deg})},
+  pos(i,t){return samplePath(st.paths[i],t)},bpos(t){return samplePath(st.bossPath,t)},
+  add(o){dyn.add(o);return o},
+  tele(type,o,a,b,c){const grp=new THREE.Group(),base=new THREE.Mesh(shapeGeo(type,o),mat(o.color,.18)),fill=new THREE.Mesh(shapeGeo(type,o),mat(o.color,.32));grp.add(base,fill);grp.position.y=o.y||.04+(st.teles.length%6)*.004;dyn.add(grp);st.teles.push({grp,base,fill,type,o,a,b,c});return grp},
+  zone(type,o,a,c){return api.tele(type,Object.assign({zone:true},o),a,c,c)},
+  hurt(i,t){st.hurts.push([i,t])},aura(i,color,t0,t1){st.auras.push([i,color,t0,t1==null?1e9:t1])},
+  shield(i,t0,t1){st.shields.push([i,t0,t1])},
+  icon(i,color,t0,t1,txt){const g=new THREE.Group();g.add(new THREE.Mesh(new THREE.SphereGeometry(.28,12,10),new THREE.MeshBasicMaterial({color})),glow(color,1.8));if(txt){const l=textSprite(txt,'#'+color.toString(16).padStart(6,'0'),'rgba(11,10,14,.8)',.7);l.position.y=.75;g.add(l)}dyn.add(g);st.icons.push([g,i,t0,t1])},
+  wave(o,ts,sp,opt={}){const ring=new THREE.Mesh(new THREE.RingGeometry(.5,1,96).rotateX(-Math.PI/2),mat(opt.color||C.kd,.8));ring.position.y=.07;dyn.add(ring);let lr=-1;const max=opt.max||40;
+   st.updates.push(t=>{const r=1+(t-ts)*sp;if(t<ts||r>max){ring.visible=false;return}ring.visible=true;const at=typeof o==='function'?o(t):o;ring.position.x=at[0];ring.position.z=at[1];const rr=Math.round(r*20)/20;if(rr!==lr){lr=rr;ring.geometry.dispose();ring.geometry=new THREE.RingGeometry(Math.max(.01,rr-.35),rr+.35,96).rotateX(-Math.PI/2)}});
+   if(opt.jump!==false)st.waves.push({o,ts,sp,ex:opt.exclude||[],max})},
+  gauge(fn){st.gaugeFn=fn},stun(t0,t1){st.stun=[t0,t1]},update(fn){st.updates.push(fn)},face(fn){st.face=fn},bossHide(fn){st.bossHide=fn},
+  orb(color,r=.6){const g=new THREE.Group();g.add(new THREE.Mesh(new THREE.SphereGeometry(r,20,14),new THREE.MeshBasicMaterial({color})),glow(color,r*6));dyn.add(g);return g},
+  label(txt,x,z,y=3,color='#ece5d7'){const l=textSprite(txt,color,'rgba(11,10,14,.78)',.85);l.position.set(x,y,z);dyn.add(l);st.updates.push(()=>{l.visible=labelsOn});return l},
+  glow,textSprite,mat,
+ };
+ sc.build(api);
+ // auto jumps over waves
+ st.waves.forEach(w=>{party.forEach((p,i)=>{if(w.ex.includes(i))return;let prev=null;for(let t=w.ts;t<w.ts+w.max/w.sp;t+=.02){const q=samplePath(st.paths[i],t),at=typeof w.o==='function'?w.o(t):w.o,d=Math.hypot(q.x-at[0],q.z-at[1])-(1+(t-w.ts)*w.sp);if(prev!==null&&prev>0&&d<=0){st.jumps[i].push(t-.3);break}prev=d}})});
+ return st}
+function teleUpdate(T,t){const {grp,base,fill,type,o,a,b,c}=T;
+ if(t<a||t>c+(o.zone?0:.6)){grp.visible=false;return}grp.visible=true;
+ const at=typeof o.at==='function'?o.at(t):(o.at||[0,0]);grp.position.x=at[0];grp.position.z=at[1];
+ if(o.yaw!=null)grp.rotation.y=(typeof o.yaw==='function'?o.yaw(t):o.yaw)*deg;
+ if(o.zone){base.material.opacity=(o.op||.22)+.05*Math.sin(t*4);fill.visible=false;return}
+ if(t<b){const p=clamp01((t-a)/(b-a));base.material.opacity=.14+.06*Math.sin(t*10);fill.visible=true;fill.material.opacity=.3;
+  if(type==='rect')fill.scale.set(1,1,Math.max(.001,p));else if(type==='ring'||type==='frame'||type==='box'||type==='arc'){fill.scale.set(1,1,1);fill.material.opacity=.08+.32*p}else fill.scale.set(Math.max(.001,p),1,Math.max(.001,p))}
+ else{const q=clamp01((t-b)/.6);fill.visible=true;fill.scale.set(1,1,1);fill.material.opacity=.85*(1-q);base.material.opacity=.4*(1-q)}}
+
+const capEl=$('#simCap'),stepsEl=$('#steps'),gaugeEl=$('#gauge'),gaugeLbl=$('#gaugeLbl'),gaugeFill=$('#gaugeFill');
+function applyFrame(t){const st=S,sc=cur;
+ const bq=samplePath(st.bossPath,t);
+ st.party.forEach((p,i)=>{const q=samplePath(st.paths[i],t);let y=0;for(const tj of st.jumps[i])if(t>=tj&&t<=tj+.6)y=Math.max(y,1.7*Math.sin(Math.PI*(t-tj)/.6));
+  p.position.set(q.x,y,q.z);const fy=st.face&&st.face(i,t,q);p.rotation.y=fy!=null?fy:Math.atan2(bq.x-q.x,bq.z-q.z);
+  p.userData.lbl.visible=labelsOn;let h=false;for(const [hi,ht] of st.hurts)if(hi===i&&t>=ht&&t<ht+.7)h=true;p.userData.hurt.visible=h;
+  let au=null;for(const [ai,col,t0,t1] of st.auras)if(ai===i&&t>=t0&&t<t1)au=col;p.userData.aura.visible=!!au;if(au)p.userData.aura.material.color.setHex(au);
+  let sh=false;for(const [si,t0,t1] of st.shields)if(si===i&&t>=t0&&t<t1)sh=true;p.userData.shield.visible=sh;if(sh)p.userData.shield.rotation.y=t*2});
+ st.icons.forEach(([g,i,t0,t1])=>{g.visible=t>=t0&&t<t1;if(g.visible){const q=samplePath(st.paths[i],t);g.position.set(q.x,3,q.z)}});
+ const boss=st.boss;boss.position.set(bq.x,bq.y*3,bq.z);boss.rotation.y=bq.yaw||0;boss.visible=!(st.bossHide&&st.bossHide(t));
+ const stn=st.stun&&t>=st.stun[0]&&t<st.stun[1];boss.userData.body.rotation.z=stn?.18*Math.sin(t*3):0;boss.userData.body.rotation.x=stn?.15:0;
+ stunLbl.visible=stars.visible=!!stn&&boss.visible;if(stn){stunLbl.position.set(bq.x,7.6,bq.z);stars.position.set(bq.x,5.8,bq.z);stars.rotation.y=t*2}
+ st.teles.forEach(T=>teleUpdate(T,t));st.updates.forEach(fn=>fn(t,st));
+ const g=st.gaugeFn&&st.gaugeFn(t);if(g){gaugeEl.hidden=false;gaugeLbl.textContent=g[0];gaugeFill.style.width=clamp01(g[1])*100+'%';gaugeFill.style.background=g[2]||''}else gaugeEl.hidden=true;
+ let k=0;sc.steps.forEach(([ts],i)=>{if(t>=ts)k=i});if(capIdx!==k){capIdx=k;capEl.textContent=sc.steps[k][1];[...stepsEl.children].forEach((li,i)=>li.classList.toggle('cur',i===k))}}
+
+/* ===== scenarios ===== */
+const SC=[];const def=o=>SC.push(o);
+const M=(m)=>'media/'+m+'.mp4';
+
+/* ---------- RAHU (carte carrée, groupe de 5) ---------- */
+def({id:'rahu-cross',grp:'rahu',gate:'Rahu · attaque 1',name:'Cross',dur:7,party:5,arena:'square',clip:'rahu-attaque-cross',
+ start:stack(...pol(5,45)),
+ steps:[[0,'Le groupe démarre stacké dans une diagonale du boss.'],[.6,'1re croix sur les points cardinaux : la diagonale est épargnée.'],[2.2,'2e croix sur les diagonales : on glisse juste à côté.'],[4,'Esquiver les deux croix est risqué : mieux vaut encaisser la 2e que se jeter dans la 1re.']],
+ build(s){[0,90,180,270].forEach(y=>s.tele('rect',{w:3.2,l:17,color:C.kd,yaw:y},.6,2,2));[45,135,225,315].forEach(y=>s.tele('rect',{w:3.2,l:17,color:C.kd,yaw:y},2.2,3.8,3.8));
+  const to=stack(...pol(5,20));for(let i=0;i<5;i++)s.m(i,2.3,3.1,to[i][0],to[i][1])}});
+def({id:'rahu-cercles',grp:'rahu',gate:'Rahu · attaque 2',name:'4 Cercles',dur:7.5,party:5,arena:'square',clip:'rahu-attaque-4-cercles',
+ start:stack(...pol(5.2,180)),
+ steps:[[0,'Rahu prend son épée à deux mains.'],[.6,'4 cercles partent l\'un après l\'autre, du corps à corps vers l\'extérieur.'],[2.4,'Le groupe reste en place et encaisse un seul cercle…'],[3.4,'…au lieu d\'en prendre deux en essayant d\'esquiver.']],
+ build(s){[[0,3.6],[3.6,7.2],[7.2,10.8],[10.8,14.4]].forEach(([a,b],k)=>s.tele(k?'ring':'circle',k?{r0:a,r1:b,color:C.kd}:{r:b,color:C.kd},.6+k*.9,1.6+k*.9,1.6+k*.9));for(let i=0;i<5;i++)s.hurt(i,2.5)}});
+def({id:'rahu-stack',grp:'rahu',gate:'Rahu · attaque 3',name:'Stack rouge',dur:9,party:5,arena:'square',clip:'rahu-attaque-stack',
+ start:[pol(5,30),pol(8,100),pol(7,160),pol(6,220),pol(8,300)],
+ steps:[[0,'Le tank porte le marqueur.'],[1,'Des cercles rouges apparaissent autour des joueurs, safe zone au centre.'],[1.3,'Tout le monde se stack sur le marqueur.'],[5.2,'Puis une vague type Draupnir part du boss : saute au bon moment.']],
+ build(s){const [mx,mz]=pol(5,30),to=stack(mx,mz);for(let i=1;i<5;i++)s.m(i,1.3,3,to[i][0],to[i][1]);
+  s.icon(0,C.gold,0,9,'MARQUEUR');for(let i=0;i<5;i++)s.zone('ring',{r0:1.7,r1:2.2,color:C.death,at:t=>{const q=s.pos(i,t);return[q.x,q.z]},op:.5},1,5);
+  s.zone('circle',{r:1.4,color:C.safe,at:[mx,mz],op:.3},1,5);s.wave([0,0],5.4,6,{color:C.kd})}});
+def({id:'rahu-violet',grp:'rahu',gate:'Rahu · dès 80 %',name:'Cercle violet',dur:10,party:5,arena:'square',
+ start:[...stack(...pol(4,200),4),pol(9,110)].map((p,i,a)=>i===4?a[4]:p),
+ steps:[[0,'D2 reçoit le cercle violet, qui se remplit autour de lui.'],[1.2,'Deux joueurs au moins le rejoignent (ici AE et D1).'],[6,'Cercle plein avec 3 joueurs dedans : rien ne se passe.'],[7.2,'Seul, une flaque violette serait apparue : gros dégâts, ralentit, grandit. 3 flaques = one-shot.']],
+ build(s){const H=4;s.m(1,1.2,3,pol(9,110)[0]-.9,pol(9,110)[1]+.6);s.m(3,1.4,3.2,pol(9,110)[0]+.7,pol(9,110)[1]-.8);
+  s.tele('circle',{r:3,color:C.void,at:t=>{const q=s.pos(H,t);return[q.x,q.z]}},1,6,6);
+  const ok=s.glow(C.safe,7);s.add(ok);s.update(t=>{const q=s.pos(H,t);ok.position.set(q.x,.6,q.z);ok.visible=t>=6&&t<7})
+  ;s.gauge(t=>{if(t<1)return null;const c=s.pos(H,t);let n=0;for(const i of [0,1,2,3]){const q=s.pos(i,t);if(Math.hypot(q.x-c.x,q.z-c.z)<3)n++}return['Joueurs avec D2 : '+n+' (2 minimum)',Math.min(1,n/2),n>=2?'linear-gradient(90deg,#2a8f55,#3fd77a)':'']})}});
+def({id:'rahu-laser',grp:'rahu',gate:'Rahu · 80 % / 30 % / 15 %',name:'Laser rouge',dur:9,party:5,arena:'square',clip:'rahu-mecanique-laser-rouge',
+ start:[...stack(...pol(3.6,200),4),pol(4,150)],
+ steps:[[0,'D2 a l\'œil rouge : le laser le vise.'],[1,'Il s\'éloigne du boss sur un côté de la safe zone.'],[5.6,'Vers 90 % du cast, le laser se fige…'],[5.8,'…D2 dash dans la safe zone.'],[6.6,'Le laser part à côté. Le reste du groupe n\'a pas bougé.']],
+ build(s){const H=4,a0=pol(12.5,72),sz=pol(12,40);s.m(H,1,3.2,a0[0],a0[1]);s.m(H,5.8,6.1,sz[0],sz[1]);s.icon(H,C.death,.3,7,'ŒIL');
+  s.zone('circle',{r:3,color:C.safe,at:sz,op:.25},1,8);
+  const yaw=t=>{const q=s.pos(H,Math.min(t,5.6));return Math.atan2(q.x,q.z)/deg};
+  s.tele('rect',{w:3,l:26,color:C.death,yaw},1,6.6,6.6);
+  const beam=new THREE.Mesh(new THREE.CylinderGeometry(.35,.35,26,12,1,true).rotateX(Math.PI/2).translate(0,0,13),new THREE.MeshBasicMaterial({color:0xff6a5a,transparent:true}));beam.position.y=2.6;s.add(beam);
+  s.update(t=>{beam.visible=t>=6.6&&t<7.3;beam.rotation.y=yaw(t)*deg;beam.material.opacity=.9*(1-clamp01((t-6.6)/.7))})}});
+def({id:'rahu-principale',grp:'rahu',gate:'Rahu · ~60 %',name:'Mécanique principale',dur:15,party:5,arena:'square',clip:'rahu-mecanique-principale',
+ start:stack(0,6),
+ steps:[[0,'Rahu se téléporte au centre, dos à l\'entrée.'],[1,'Les joueurs sont envoyés aux coins de la carte.'],[1.5,'Course vers le centre : les cercles explosent de l\'extérieur vers l\'intérieur.'],[3.3,'Dès que le 1er cercle explose : dash au corps à corps.'],[4.6,'On tourne autour du boss dans le sens des aiguilles d\'une montre, entre les deux pizzas.'],[10.4,'CL reçoit la zone jaune : tout le monde s\'y pack.'],[13,'Ensuite : Bombardement puis Laser 180° (aller dans le dos).']],
+ build(s){s.btp(.5,0,0,180);const cn=[[-15,15],[15,15],[15,-15],[-15,-15],[13.5,15]];cn.forEach((c,i)=>s.tp(i,1,c[0],c[1]));
+  cn.forEach((c,i)=>{const d=Math.hypot(...c),u=c.map(v=>v/d);s.m(i,1.5,3.1,u[0]*10.6,u[1]*10.6);s.m(i,3.3,3.7,u[0]*3.6,u[1]*3.6)});
+  s.tele('ring',{r0:9,r1:13.5,color:C.death},1.5,3.2,3.2);s.tele('ring',{r0:4.6,r1:9,color:C.death},2.4,4.3,4.3);
+  const pz=t=>60-(t-4.5)*36;[0,180].forEach(o=>s.zone('sector',{r:13,ang:80,color:C.kd,op:.3,yaw:t=>pz(t)+o},4.5,10.6));
+  for(let i=0;i<5;i++){let tt=4;for(let t=4.6;t<=10.2;t+=.4){const a=pz(t)-90+(i-2)*9,q=pol(3.6,a);s.m(i,tt,t,q[0],q[1]);tt=t}}
+  const yz=t=>{const q=s.pos(2,t);return[q.x,q.z]};s.zone('circle',{r:2.6,color:C.kd,at:yz,op:.35},10.4,13);
+  for(const i of [0,1,3,4]){const q=s.pos(2,10.4);s.m(i,10.6,11.8,q.x+OFF[i][0]*.8,q.z+OFF[i][1]*.8)}}});
+def({id:'rahu-split',grp:'rahu',gate:'Rahu · ~40 %',name:'Split Map',dur:12,party:5,arena:'square',clip:'rahu-mecanique-split-map',
+ start:stack(0,6),
+ steps:[[0,'Rahu se téléporte au centre.'],[.8,'Les joueurs arrivent un peu partout dans un quart de la carte.'],[1.5,'La carte est coupée en 4 : ne traverse pas les lignes.'],[2,'Tout le monde suit le marqueur, dans le coin le plus au bord.'],[6,'Bombardement : on se sépare le long des bords…'],[7.6,'…pour laisser une grande safe zone au milieu du quart.'],[9,'On se regroupe : Dash, Bombardement, Cross, puis Laser ou Stack.']],
+ build(s){const ar=[[6,12],[12,4],[4,6],[14,14],[9,9]];ar.forEach((c,i)=>s.tp(i,.8,c[0],c[1]));
+  s.zone('rect',{w:.7,l:36,color:C.death,yaw:0,at:[0,-18],op:.6},1.5,12);s.zone('rect',{w:.7,l:36,color:C.death,yaw:90,at:[-18,0],op:.6},1.5,12);
+  s.icon(0,C.gold,1,12,'MARQUEUR');const g=stack(14.5,14.5);s.m(0,1.6,2.4,14.5,14.5);for(let i=1;i<5;i++)s.m(i,2,4,g[i][0],g[i][1]);
+  const sp=[[16.4,9],[16.4,3],[9,16.4],[3,16.4],[16.4,16.4]];sp.forEach((c,i)=>{s.m(i,6.1,7.3,c[0],c[1]);s.tele('circle',{r:2.3,color:C.kd,at:t=>{const q=s.pos(i,Math.min(t,7.5));return[q.x,q.z]}},6,7.5,7.5);s.zone('circle',{r:2.3,color:0xc0602a,at:c,op:.4},7.5,12)});
+  s.zone('circle',{r:2.4,color:C.safe,at:[9.5,9.5],op:.25},7.5,12);const r=stack(9.5,9.5);for(let i=0;i<5;i++)s.m(i,8.6,10,r[i][0],r[i][1])}});
+def({id:'rahu-derniere',grp:'rahu',gate:'Rahu · ~20 %',name:'Dernière mécanique',dur:12,party:5,arena:'square',clip:'rahu-derniere-mecanique',
+ start:[...stack(...pol(3.4,200),4),pol(4,120)],
+ steps:[[0,'4 monstres apparaissent au hasard. D2 a l\'œil rouge.'],[1,'D2 se place pour que le monstre soit entre lui et le boss.'],[3.8,'Le tir traverse le monstre et le tue. D2 encaisse, il n\'esquive pas.'],[4.6,'Monstre suivant.'],[7.6,'Encore un. Les autres restent au CàC et tapent (les mêlée peuvent bloquer).'],[9,'Un monstre raté = une flaque violette.']],
+ build(s){const H=4,mons=[[9,-7],[7,9],[-8,8],[-10,-6]];s.icon(H,C.death,.3,12,'ŒIL');
+  const mo=mons.map(([x,z])=>{const g=new THREE.Group();g.add(new THREE.Mesh(new THREE.SphereGeometry(.8,14,10),std(0x3a1020,0x801030,.6)),glow(0xff3b6b,2.6));g.position.set(x,.8,z);s.add(g);return g});
+  const kills=[3.8,7.6];[0,1].forEach(k=>{const [x,z]=mons[k],L=Math.hypot(x,z);s.m(H,k?4.6:1,k?6.6:2.8,x/L*(L+3.4),z/L*(L+3.4));s.hurt(H,kills[k])});
+  const yaw=t=>{const q=s.pos(H,t);return Math.atan2(q.x,q.z)/deg};
+  kills.forEach((b,k)=>s.tele('rect',{w:2.6,l:18,color:C.death,yaw},b-2,b,b));
+  s.update(t=>mo.forEach((g,k)=>{g.visible=!(k<2&&t>=kills[k]);g.position.y=.8+.15*Math.sin(t*3+k)}));
+  s.gauge(t=>{const n=kills.filter(k=>t>=k).length;return['Monstres tués '+n+'/4',n/4,'linear-gradient(90deg,#801030,#ff3b6b)']})}});
+
+/* ---------- KETU (carte ronde, spawn en bas) ---------- */
+const KP=[[0,-10.6],[-10.6,0],[-4.6,12.3],[10.6,0],[4.6,12.3]];
+def({id:'ketu-principale',grp:'ketu',gate:'Ketu · ~80 % (et ~50 %)',name:'Mécanique principale',dur:18,party:5,arena:'circle',clip:'ketu-mecanique-principale',
+ start:stack(0,5),
+ steps:[[0,'Placement : un au fond, deux à gauche, deux à droite.'],[2,'Ketu au centre, zone violette sous lui.'],[3,'Des fantômes apparaissent : chacun tue ceux de son coin.'],[3.6,'Les météorites tombent partout : esquive.'],[5,'Les triangles lumineux font le tour de la carte : aucun fantôme ne doit les toucher.'],[6.3,'Lasers depuis le spawn : ils font mal et étourdissent.'],[12.6,'Fin : tout le monde sur l\'emplacement du boss, zone qui augmente les soins.']],
+ build(s){s.label('SPAWN',0,R+1.5,1,'#ff8d6b');KP.forEach((p,i)=>s.m(i,.5,2.4,p[0],p[1]));
+  s.zone('circle',{r:4,color:C.void,op:.35},2,12.4);s.bm(12.2,12.8,0,-15,0);
+  const gh=[];KP.forEach((p,i)=>[3,8].forEach((ts,w)=>{const a=Math.atan2(p[0],p[1])+(w?-.5:.5),gp=[p[0]+Math.sin(a)*3.4,p[1]+Math.cos(a)*3.4];gh.push({gp,ts,die:ts+2.4+i*.15,i});s.m(i,ts+.6,ts+1.8,gp[0]*.9+p[0]*.1,gp[1]*.9+p[1]*.1);s.m(i,ts+2.6,ts+3.6,p[0],p[1])}));
+  gh.forEach(g=>{const o=new THREE.Group();o.add(new THREE.Mesh(new THREE.SphereGeometry(.45,12,10),new THREE.MeshBasicMaterial({color:0xbfe6ff})),glow(0x7fd0ff,3));s.add(o);g.o=o});
+  s.update(t=>gh.forEach(g=>{g.o.visible=t>=g.ts&&t<g.die;g.o.position.set(g.gp[0],1+.3*Math.sin(t*3+g.i),g.gp[1])}));
+  [[4,[6,5]],[4.6,[-6,-6]],[6,[-9,9]],[7.4,[8,-8]],[9,[1,8]],[10,[-3,-13]]].forEach(([ts,at])=>s.tele('circle',{r:2,color:C.kd,at},ts,ts+1.4,ts+1.4));
+  [-7.5,7.5].forEach(x=>s.tele('rect',{w:2.4,l:36,color:C.death,yaw:180,at:[x,18]},6.3,8,8));
+  const tris=[0,1,2].map(k=>{const m=new THREE.Mesh(new THREE.CircleGeometry(1.3,3).rotateX(-Math.PI/2),new THREE.MeshBasicMaterial({color:0xfff2b0,transparent:true,opacity:.95}));const g=s.glow(0xfff2b0,3.5);const grp=new THREE.Group();grp.add(m,g);g.position.y=.6;s.add(grp);return grp});
+  s.update(t=>tris.forEach((g,k)=>{g.visible=t>=5&&t<12.4;const a=(t-5)*.55+k*2.09;g.position.set(Math.sin(a)*16.5,.1,Math.cos(a)*16.5);g.rotation.y=-a}));
+  s.zone('circle',{r:3.4,color:C.safe,op:.35},12.6,18);const h=stack(0,0);for(let i=0;i<5;i++)s.m(i,12.8,14.6,h[i][0],h[i][1]);
+  s.gauge(t=>{if(t<3||t>12.4)return null;const n=gh.filter(g=>t>=g.die).length;return['Fantômes tués '+n+'/10 · aucun ne touche un triangle',n/10,'linear-gradient(90deg,#4a7ac4,#bfe6ff)']})}});
+def({id:'ketu-draupnir',grp:'ketu',gate:'Ketu · attaque 2',name:'Draupnir',dur:9,party:5,arena:'circle',clip:'ketu-attaque-draupnir',
+ start:[...stack(0,2,4),[5,6]],
+ steps:[[0,'Ketu dash sur un bord de la carte.'],[1.6,'Il vise D2, marqué d\'un œil rouge.'],[3.8,'L\'attaque tombe sur D2.'],[4.4,'En retirant son arme du sol, il envoie une vague : tout le monde saute.'],[6,'Un CàC ciblé peut bloquer l\'attaque : la vague est alors annulée.']],
+ build(s){s.bm(.6,1.3,0,-15,0);s.icon(4,C.death,1.6,4,'ŒIL');const at=[5,6];s.tele('circle',{r:3,color:C.death,at},1.8,3.8,3.8);s.hurt(4,3.8);s.wave(at,4.4,7,{color:C.kd})}});
+def({id:'ketu-faux-rouges',grp:'ketu',gate:'Ketu · attaque 3',name:'Faux rouges',dur:7,party:5,arena:'circle',clip:'ketu-attaque-faux-rouges',
+ start:[pol(2.6,0),pol(8,140),pol(8,220),pol(2.6,160),pol(9,180)],
+ steps:[[0,'Ketu prépare deux attaques rouges : ni esquive ni blocage.'],[.4,'Tout le monde se rapproche du boss.'],[1.4,'1re attaque à gauche…'],[3,'…puis à droite. Près du boss, aucune ne touche.']],
+ build(s){const to=[pol(2.6,0),pol(2.8,130),pol(2.8,230),pol(2.6,160),pol(2.8,195)];for(let i=1;i<5;i++)s.m(i,.4,1.3,to[i][0],to[i][1]);
+  s.tele('arc',{r0:4,r1:17,ang:180,color:C.death,yaw:90},1.4,2.8,2.8);s.tele('arc',{r0:4,r1:17,ang:180,color:C.death,yaw:-90},3,4.4,4.4)}});
+def({id:'ketu-lasers',grp:'ketu',gate:'Ketu · attaque 6',name:'Lasers',dur:7,party:5,arena:'circle',clip:'ketu-attaque-laser',
+ start:[pol(3,0),pol(8,120),pol(8,240),pol(3,90),pol(9,200)],
+ steps:[[0,'Ketu fait tourner sa faux vers l\'avant : les lasers vont arriver de ce côté.'],[.3,'Le groupe passe derrière le boss, entre deux directions.'],[1,'Frappe dans les 8 directions + lasers venus de l\'avant.'],[4,'Derrière le boss, rien ne touche.']],
+ build(s){const sp=stack(...pol(5,157.5));for(let i=0;i<5;i++)s.m(i,.3,1.4,sp[i][0],sp[i][1]);for(let k=0;k<8;k++)s.tele('rect',{w:2.4,l:17,color:C.death,yaw:k*45},1,3,3);
+  [-12,-5.5,5.5,12].forEach(x=>s.tele('rect',{w:2.2,l:30,color:C.void,yaw:180,at:[x,18]},1.4,3.6,3.6))}});
+def({id:'ketu-yeux',grp:'ketu',gate:'Ketu · attaque 7',name:'Les yeux',dur:12,party:5,arena:'circle',clip:'ketu-attaque-yeux',
+ start:stack(0,3),
+ steps:[[0,'Ketu disparaît.'],[1.4,'Œil ROUGE : tout le monde le regarde.'],[4,'Œil BLEU : on lui tourne le dos.'],[6.5,'Œil ROUGE : on le regarde à nouveau (jamais 3 fois la même couleur).'],[9,'Fin : on court à l\'endroit où était le boss, c\'est la safe zone.']],
+ build(s){s.bossHide(t=>t>=.8&&t<9);const eyes=[[C.red,[-12,-7],1.4,3.6,true],[C.blue,[12,-5],4,6.2,false],[C.red,[3,13],6.5,8.7,true]];
+  eyes.forEach(([c,at,a,b])=>{const g=new THREE.Group();const w=new THREE.Mesh(new THREE.SphereGeometry(1.1,20,14),std(0xe8dcc8));const ir=new THREE.Mesh(new THREE.SphereGeometry(.6,16,12),new THREE.MeshBasicMaterial({color:c}));ir.position.z=.7;g.add(w,ir,s.glow(c,5));g.position.set(at[0],3.2,at[1]);g.lookAt(0,3.2,3);s.add(g);s.update(t=>{g.visible=t>=a&&t<b})});
+  const look=new THREE.Group(),lm=new THREE.Mesh(shapeGeo('sector',{r:6,ang:40}),mat(C.safe,.35));lm.position.y=.06;look.add(lm);s.add(look);
+  const cur=t=>eyes.find(e=>t>=e[2]&&t<e[3]);
+  s.face((i,t,q)=>{const e=cur(t);if(!e)return null;const a=Math.atan2(e[1][0]-q.x,e[1][1]-q.z);return e[4]?a:a+Math.PI});
+  s.update(t=>{const e=cur(t);look.visible=!!e;if(e){look.position.set(0,0,3);const a=Math.atan2(e[1][0],e[1][1]-3);look.rotation.y=e[4]?a:a+Math.PI}});
+  s.zone('circle',{r:3,color:C.safe,op:.35},8.8,12);s.tele('ring',{r0:3.2,r1:R,color:C.death},9,11,11);const h=stack(0,0);for(let i=0;i<5;i++)s.m(i,9,10.4,h[i][0],h[i][1])}});
+def({id:'ketu-last',grp:'ketu',gate:'Ketu · ~20 %',name:'Last Mech',dur:13,party:5,arena:'circle',clip:'ketu-mecanique-principale-3',
+ start:stack(0,5),
+ steps:[[0,'Ketu au centre : un énorme triangle rouge sur chaque joueur.'],[.4,'Le groupe se pack vers le spawn.'],[5.5,'Les triangles se figent (vers 4,5 s de cast) : dash sur le côté.'],[6.4,'Tape un cristal AU CORPS À CORPS : invulnérabilité.'],[7.6,'Les vagues de dégâts passent sans dégâts.'],[9.6,'2e cristal quelques secondes plus tard (ça relance le bonus). 2 suffisent.']],
+ build(s){s.label('SPAWN',0,R+1.5,1,'#ff8d6b');const pk=stack(0,12);for(let i=0;i<5;i++)s.m(i,.4,2,pk[i][0],pk[i][1]);
+  for(let i=0;i<5;i++)s.tele('sector',{r:18,ang:24,color:C.death,yaw:t=>{const q=s.pos(i,Math.min(t,5.5));return Math.atan2(q.x,q.z)/deg}},.4,7,7);
+  const cr=[[-11,6],[11,6]];const side=[0,0,1,0,1];side.forEach((sd,i)=>{const c=cr[sd];s.m(i,5.6,6.3,c[0]+(sd?-1.4:1.4)+OFF[i][0]*.5,c[1]+OFF[i][1]*.6);s.shield(i,6.5,9.5);s.shield(i,9.8,12.8)});
+  cr.forEach(([x,z])=>{const g=new THREE.Group(),c=new THREE.Mesh(new THREE.OctahedronGeometry(.8),std(0x6fd0ff,0x2a7ac0,.8));c.position.y=1.2;g.add(c,s.glow(0x6fd0ff,3.4));g.position.set(x,0,z);s.add(g);s.update(t=>{g.visible=t>=4.5;c.rotation.y=t*2;c.scale.setScalar((t>6.3&&t<6.7)||(t>9.6&&t<10)?1.4:1)})});
+  [[2,[5,-4]],[3,[-6,-7]],[8,[0,-9]]].forEach(([ts,at])=>s.tele('circle',{r:1.8,color:C.kd,at},ts,ts+1.2,ts+1.2));
+  s.wave([0,0],7.6,9,{color:C.death,jump:false});s.wave([0,0],8.9,9,{color:C.death,jump:false});s.wave([0,0],10.6,9,{color:C.death,jump:false})}});
+
+/* ---------- LUDRA phase 1 (carte carrée, 10 joueurs) ---------- */
+def({id:'ludra-draupnir',grp:'p1',gate:'Ludra P1 · attaque 3',name:'Draupnir',dur:7,arena:'square',boss:'ludra',clip:'ludra-phase-1-attaque-draupnir',bossStart:{x:0,z:-4,yaw:0},
+ start:[[0,1.5],[-7,2],[7,2],[-4,-4],[4,-4],[-5,-8],[5,-8],[-8,-2],[8,-2],[0,-10]],
+ steps:[[0,'Ludra se dresse.'],[1.6,'1re patte (droite à l\'écran) : une vague part.'],[2.1,'2e patte (gauche) : une 2e vague.'],[2.4,'Côté 2e patte, les vagues arrivent presque ensemble : un seul saut suffit.'],[3,'Côté 1re patte, il faut sauter deux fois.']],
+ build(s){s.update(t=>{BOSSES.ludra.userData.body.position.y=t>.6&&t<2.4?1.2*Math.sin(Math.PI*clamp01((t-.6)/1.8)):0});s.wave([2.4,-2.6],1.6,6.5);s.wave([-2.4,-2.6],2.1,6.5)}});
+def({id:'ludra-oeil',grp:'p1',gate:'Ludra P1 · en boucle jusqu\'à 50 %',name:'Œil rouge',dur:24,arena:'square',boss:'ludra',clip:'ludra-phase-1-mecanique-oeil-rouge',
+ start:[[0,4],[-6,5],[6,5],[-3,-3],[3,-3],[-4,1],[4,1],[-7,-5],[7,-5],[0,-6]],
+ steps:[[0,'Les orbes : 4 bleues hors de l\'arène, la rouge devant le boss, derrière le tank.'],[3.4,'Bleues : un saut au pied. Rouge : D1 l\'intercepte en BLOQUANT.'],[5,'La carte rétrécit. D2 reçoit l\'œil rouge jusqu\'à la fin.'],[7,'Ludra saute : tornades vers l\'extérieur + 2 orbes bleues à prendre.'],[10.4,'Ludra se tourne vers D2 : énorme cône. Les autres sortent de l\'axe.'],[12.6,'Coup au sol : des zones jaunes suivent chaque joueur. CD défensifs, blocage, esquive parfaite.'],[15,'Saut + tornades et 2e cône (même chose, accéléré ici).'],[15.6,'Énorme attaque finale : la zone extérieure part d\'abord…'],[17.8,'…puis dash out avant que le centre explose.'],[20.6,'Réatterrissage : CROSS. On se met dans les diagonales.']],
+ build(s){const blues=[[-19.5,-9],[19.5,-9],[-19.5,7],[19.5,7]],red=[0,8],tk=[7,8,9,6];
+  const ob=blues.map(([x,z])=>{const o=s.orb(C.blue,.6);o.position.set(x,1.2,z);return o}),orr=s.orb(C.red,.75);orr.position.set(red[0],1.2,red[1]);
+  tk.forEach((pi,k)=>{s.m(pi,.6,3.2,blues[k][0]*.93,blues[k][1]);s.jump(pi,3.6);s.m(pi,4,5.6,blues[k][0]*.45,blues[k][1]*.6)});
+  s.m(3,.6,2.8,0,7.2);s.shield(3,3.4,4.6);s.m(3,4.4,5.4,-3,3);
+  s.update(t=>{ob.forEach((o,k)=>{o.visible=t>=.3&&t<3.9;o.position.y=1.2+.2*Math.sin(t*3+k)});orr.visible=t>=.3&&t<4;orr.position.y=1.2+.2*Math.sin(t*3)});
+  s.tele('frame',{h0:10.5,h1:18,color:C.death},5,6.5,6.5);s.zone('frame',{h0:10.5,h1:18,color:0x5a120c,op:.6},6.5,24);
+  const D2=4;s.icon(D2,C.death,5,20,'ŒIL');s.m(D2,6,7,-3.5,-.5);
+  s.bm(7,8,0,0,0,1.1);const tor=[];for(let k=0;k<8;k++){const m=new THREE.Mesh(new THREE.CylinderGeometry(.35,.9,3,10,1,true),new THREE.MeshBasicMaterial({color:0xcfd8ff,transparent:true,opacity:.45,side:THREE.DoubleSide}));s.add(m);tor.push(m)}
+  s.update(t=>tor.forEach((m,k)=>{const u=(t-8)/2.4;m.visible=u>=0&&u<1;const a=k*45*deg+.4;m.position.set(Math.sin(a)*(1+u*10),1.5,Math.cos(a)*(1+u*10));m.rotation.y=t*6}));
+  const ob2=[[-6,6.5],[7,-6]].map(([x,z])=>{const o=s.orb(C.blue,.55);o.position.set(x,1.2,z);return o});s.m(5,8.2,9.4,-6,6.5);s.jump(5,9.6);s.m(6,8.2,9.4,7,-6);s.jump(6,9.6);
+  s.update(t=>ob2.forEach(o=>o.visible=t>=8&&t<9.9));
+  const cyaw=t=>{const q=s.pos(D2,Math.min(t,12));const b=s.bpos(t);return Math.atan2(q.x-b.x,q.z-b.z)/deg};
+  s.bm(10.2,10.6,0,0,-98);s.tele('sector',{r:14,ang:60,color:C.death,yaw:cyaw},10.4,12.2,12.2);
+  [[0,[3,6]],[1,[-2,7]],[3,[5,-6]],[7,[-6,-9.5]]].forEach(([i,p])=>s.m(i,10.5,11.5,p[0],p[1]));s.m(D2,10.5,11,-2.8,-1.2);
+  for(let i=0;i<10;i++){s.tele('circle',{r:2,color:C.kd,at:t=>{const q=s.pos(i,t);return[q.x,q.z]}},12.6,14.6,14.6);s.shield(i,14.2,15)}
+  s.bm(15,15.8,0,0,0,1);
+  const ring=[];for(let i=0;i<10;i++){const a=i*36+18,p=pol(5,a),o=pol(8.6,a);ring.push([p,o]);s.m(i,15.6,17,p[0],p[1]);s.m(i,17.8,18.2,o[0],o[1])}
+  s.tele('ring',{r0:6.4,r1:15,color:C.death},15.6,17.6,17.6);s.tele('circle',{r:6.2,color:C.death},15.6,19.4,19.4);
+  s.bm(19.6,20.6,0,0,0,1.4);[0,90,180,270].forEach(y=>s.tele('rect',{w:3.2,l:14,color:C.kd,yaw:y},20.6,22.4,22.4));
+  for(let i=0;i<10;i++){const p=pol(6+(i%3)*1.2,45+90*Math.floor(i/2.5)+((i%2)?6:-6));s.m(i,20.7,21.8,p[0],p[1])}}});
+function shugo(phase){return function(s){
+ const tile=(r,c)=>[(c-2.5)*5,(r-2.5)*5];
+ const tiles=[];for(let r=0;r<6;r++)for(let c=0;c<6;c++){const [x,z]=tile(r,c);const m=new THREE.Mesh(new THREE.PlaneGeometry(4.6,4.6).rotateX(-Math.PI/2),mat(0x6a6080,.12));m.position.set(x,.05,z);s.add(m);tiles.push({r,c,x,z,m,rev:1e9})}
+ const P1=[ // [player, path tiles], blockers have orb
+  {i:0,b:1,path:[[0,0],[0,1],[0,2]],orb:[tile(0,2)[0],-19.5]},
+  {i:7,path:[[0,4],[1,4],[2,4],[3,4]]},
+  {i:1,b:1,path:[[0,5],[1,5],[2,5]],orb:[19.5,tile(2,5)[1]]},
+  {i:8,path:[[1,0],[1,1],[1,2],[1,3]]},
+  {i:3,path:[[2,2],[2,3]]},{i:4,path:[[3,3],[3,2]]},
+  {i:9,path:[[5,1],[4,1],[3,1],[2,1]]},
+  {i:2,b:1,path:[[5,0],[4,0],[3,0]],orb:[-19.5,tile(3,0)[1]]},
+  {i:6,path:[[4,5],[4,4],[4,3],[4,2]]},
+  {i:5,b:1,path:[[5,5],[5,4],[5,3]],orb:[tile(5,3)[0],19.5]}];
+ const P2=P1.map(o=>Object.assign({},o));
+ if(phase===2){P2[0]={i:0,b:1,path:[[0,0],[0,1]],orb:[-19.5,-19.5]};P2[2]={i:1,b:1,path:[[0,5],[1,5]],orb:[19.5,-19.5]};P2[7]={i:2,b:1,path:[[5,0],[4,0]],orb:[-19.5,19.5]};P2[9]={i:5,b:1,path:[[5,5],[5,4]],orb:[19.5,19.5]}}
+ const plan=phase===2?P2:P1,safe=phase===2?[2,1]:[1,3];
+ const DT=2.3,T0=3.2;
+ plan.forEach(o=>{const st=tile(...o.path[0]);s.m(o.i,1.4,T0-.2,st[0],st[1]);
+  o.path.forEach((p,j)=>{const [x,z]=tile(...p);if(j)s.m(o.i,T0+(j-1)*DT+1.4,T0+j*DT,x,z);const tl=tiles.find(q=>q.r===p[0]&&q.c===p[1]);tl.rev=Math.min(tl.rev,T0+j*DT+1.2)});
+  if(o.b){const tE=T0+(o.path.length-1)*DT+1.4,last=tile(...o.path[o.path.length-1]);s.m(o.i,tE,tE+1,o.orb[0]*.93,o.orb[1]*.93);s.shield(o.i,tE+1,tE+1.8);s.m(o.i,tE+1.8,tE+2.8,last[0],last[1]);
+   const orb=s.orb(0xf2cf3c,.6);orb.position.set(o.orb[0],1.2,o.orb[1]);s.update(t=>{orb.visible=t>=2&&t<tE+1.2})}
+  s.zone('circle',{r:1.4,color:C.kd,op:.35,at:t=>{const q=s.pos(o.i,t);return[q.x,q.z]}},T0,13)});
+ const sf=tiles.find(q=>q.r===safe[0]&&q.c===safe[1]);
+ const sx=sf.x,sz=sf.z,inSafe=stack(sx,sz,10).map(([x,z])=>[sx+(x-sx)*.75,sz+(z-sz)*.75]);for(let i=0;i<10;i++)s.m(i,14,15.8,inSafe[i][0],inSafe[i][1]);
+ s.update(t=>{tiles.forEach(q=>{q.m.visible=t>=1.2;let col=0x6a6080,op=.12;if(t>=q.rev){col=0xb8b0c8;op=.32;if(q===sf){col=C.gold;op=.55+.25*Math.sin(t*8)}}q.m.material.color.setHex(col);q.m.material.opacity=op})});
+ if(phase===1){[[0,-18],[-18,0]].forEach((at,k)=>s.tele('rect',{w:1.2,l:36,color:C.death,yaw:k?90:0,at},6.2,8.4,8.4));s.bossHide(t=>t>=1.2&&t<17.2);s.bm(17.2,17.3,0,-14,0)}
+ else{s.wave([0,-21],6.4,7);s.wave([0,-21],10.4,7);s.wave([0,-21],13.6,7)}
+ s.tele('box',{w:36,d:36,color:C.death},14,17,17);s.zone('box',{w:4.6,d:4.6,color:C.safe,at:[sx,sz],op:.5,y:.1},15.5,17.6);
+ s.stun(17.4,20);
+ s.gauge(t=>{if(t<T0)return null;const n=tiles.filter(q=>t>=q.rev).length;return t>=sf.rev?['Case sûre trouvée ! Tout le monde dedans avant l\'explosion',1,'linear-gradient(90deg,#b4852f,#f2cf3c)']:['Cases découvertes '+n+'/36',n/36,'']});
+}}
+def({id:'ludra-shugo1',grp:'p1',gate:'Ludra P1 · ~50 %',name:'Shugo',dur:20,arena:'square',boss:'ludra',clip:'ludra-phase-1-mecanique-shugo',bossStart:{x:0,z:-14,yaw:0},
+ labels:['B4','B1','B3','C1','C2','B2','G4','G1','G2','G3'],
+ start:stack(0,0,10),
+ steps:[[0,'Météorites, puis Ludra disparaît dans un portail : le sol devient une grille.'],[1.4,'Chacun rejoint sa case de départ (schéma du guide).'],[3.2,'La zone jaune suit chaque joueur puis se fige : la case s\'éclaire.'],[6.2,'2 lasers one-shot au milieu : les cases du centre sont faites avant.'],[7.6,'Les bloqueurs B finissent leurs 3 cases puis bloquent l\'orbe extérieure.'],[11.4,'La case sûre brille plus que les autres.'],[14,'Tout le monde y entre avant l\'explosion de la météorite géante.'],[17.4,'Ludra est KO : grosse fenêtre de dégâts.']],
+ build:shugo(1)});
+
+/* ---------- LUDRA phase 2 ---------- */
+def({id:'ludra-p2-orbes',grp:'p2',gate:'Ludra P2 · cycle',name:'Les orbes',dur:10,arena:'square',boss:'ludra',clip:'ludra-phase-2-mecanique-orbes',bossStart:{x:0,z:-16,yaw:0},
+ start:[[0,-11.5],[-4,0],[4,0],[0,-5],[-8,-5],[8,-5],[-8,4],[8,4],[-3,3],[3,3]],
+ steps:[[0,'5 orbes : 3 devant (rouge au milieu), 2 derrière.'],[1,'Chacun va sous son orbe.'],[2.6,'1er Draupnir : D1 (orbe rouge) l\'encaisse.'],[3.6,'Les bleues se prennent d\'un saut, D1 BLOQUE la rouge.'],[4.6,'2e Draupnir : D1 le saute directement.']],
+ build(s){const front=[[-10,-8],[0,-8],[9.3,-8]],back=[[-10,7.3],[9.3,7.3]];const all=[[4,front[0],C.blue],[3,front[1],C.red],[5,front[2],C.blue],[6,back[0],C.blue],[7,back[1],C.blue]];
+  all.forEach(([pi,[x,z],c])=>{const o=s.orb(c,c===C.red?.75:.6);o.position.set(x,1.2,z);s.update(t=>{o.visible=t>=.3&&t<3.9});s.m(pi,1,2.4,x,z+.4);if(c===C.blue)s.jump(pi,3.6)});
+  s.shield(3,3.4,4.4);s.hurt(3,3.2);s.wave([0,-13],2.6,7,{exclude:[3]});s.wave([0,-13],4.6,7)}});
+const ZB=[[-7.3,0],[-5.1,5.1],[0,7.3],[5.1,5.1]],ZR=[[7.3,0],[5.1,-5.1],[0,-7.3],[-5.1,-5.1]];
+def({id:'ludra-zikel',grp:'p2',gate:'Ludra P2 · attaque 2',name:'Zikel',dur:27,arena:'square',boss:'ludra',clip:'ludra-phase-2-attaque-zikel',bossStart:{x:0,z:-24,yaw:0},
+ start:[...stack(-6,-11),...stack(6,-11)],
+ steps:[[0,'Ludra s\'envole loin de l\'arène. Bleus à gauche, rouges à droite.'],[2,'Étape 1 : la zone se montre… on attend à côté.'],[4,'Elle explose puis devient safe : on entre.'],[5,'Lasers depuis le BAS : seule la zone protège.'],[8.2,'Étape 2 : chaque groupe tourne d\'un cran. Lasers depuis la GAUCHE.'],[14.4,'Étape 3 : lasers depuis la DROITE.'],[20.6,'Étape 4 : lasers depuis le HAUT.'],[25,'Rien ne presse : on n\'entre pas trop tôt.']],
+ build(s){s.update(t=>{BOSSES.ludra.position.y=6});for(let i=0;i<10;i++)s.aura(i,i<5?C.blue:C.red,0);
+  const bands=[{at:[-18,0],yaw:90,l:36},{at:[-18,18],yaw:135,l:50.9},{at:[0,-18],yaw:0,l:36},{at:[-18,-18],yaw:45,l:50.9}];
+  const dirs=[[0,-1],[1,0],[-1,0],[0,1]];
+  for(let k=0;k<4;k++){const T0=2+k*6.2,b=bands[k];
+   s.tele('rect',{w:3.4,l:b.l,color:C.void,yaw:b.yaw,at:b.at},T0,T0+2,T0+2);s.zone('rect',{w:3.4,l:b.l,color:C.safe,yaw:b.yaw,at:b.at,op:.3},T0+2,T0+5);
+   [ZB[k],ZR[k]].forEach((p,g)=>{const prev=k?(g?ZR:ZB)[k-1]:(g?[6,-11]:[-6,-11]);const ap=[p[0]+(prev[0]-p[0])*.4,p[1]+(prev[1]-p[1])*.4];
+    const cl=stack(0,0,5);for(let j=0;j<5;j++){const i=g*5+j,o=[cl[j][0]*.55,cl[j][1]*.55];s.m(i,T0-1.4,T0+.8,ap[0]+o[0],ap[1]+o[1]);s.m(i,T0+2.1,T0+2.7,p[0]+o[0],p[1]+o[1])}});
+   const d=dirs[k],lines=[];for(let q=-16;q<=16;q+=2.6){const m=new THREE.Mesh(new THREE.BoxGeometry(.25,.25,6),new THREE.MeshBasicMaterial({color:0xc9a0ff}));s.add(m);lines.push([m,q])}
+   s.update(t=>{const u=(t-(T0+3))/1.4;lines.forEach(([m,q])=>{m.visible=u>=0&&u<1;const along=-20+u*40;if(d[0]===0){m.position.set(q,1,d[1]<0?-along:along);m.rotation.y=0}else{m.position.set(d[0]>0?along:-along,1,q);m.rotation.y=Math.PI/2}})})}
+  s.gauge(t=>{const k=Math.max(0,Math.min(3,Math.floor((t-2)/6.2)));return t<2?null:['Étape '+(k+1)+'/4 · lasers depuis '+['le bas','la gauche','la droite','le haut'][k],(k+1)/4,'linear-gradient(90deg,#7b5cc4,#c9a0ff)']})}});
+def({id:'ludra-couleurs',grp:'p2',gate:'Ludra P2 · ~35 % → fin',name:'Les couleurs',dur:9,arena:'square',boss:'ludra',clip:'ludra-phase-2-mecanique-couleurs',bossStart:{x:0,z:-17,yaw:0},
+ start:stack(0,-3,10),
+ steps:[[0,'Ludra fait apparaître une grande orbe dans chaque patte.'],[1,'Chaque joueur reçoit 3 petites orbes rouges ou bleues.'],[1.3,'On copie le boss : bleu à gauche, rouge à droite. Cours vite, les liens font mal.'],[4.5,'Si Ludra bouge : même placement, sauf s\'il part à l\'opposé de la carte.']],
+ build(s){const bp=[[-9.6,-13.5],[-6.1,-15],[-3.5,-12.5],[-7.5,-10.6],[-4.8,-8.1]],rp=[[6.75,-15.5],[11.1,-15],[4,-12.5],[8.1,-11.1],[5.4,-8.1]];
+  const col=i=>i%2?C.red:C.blue;let bi=0,ri=0;const tgt=[];for(let i=0;i<10;i++)tgt[i]=col(i)===C.blue?bp[bi++]:rp[ri++];
+  for(let i=0;i<10;i++){s.m(i,1.3,3.4,tgt[i][0],tgt[i][1]+2.2);s.aura(i,col(i),1)}
+  const h=BOSSES.ludra.userData.hands;s.update(t=>h.forEach(o=>o.visible=t>=.3));
+  const mini=[];for(let i=0;i<10;i++)for(let k=0;k<3;k++){const m=new THREE.Mesh(new THREE.SphereGeometry(.16,8,6),new THREE.MeshBasicMaterial({color:col(i)}));s.add(m);mini.push([m,i,k])}
+  s.update(t=>mini.forEach(([m,i,k])=>{m.visible=t>=1;const q=s.pos(i,t),a=t*3+k*2.09;m.position.set(q.x+Math.sin(a)*.8,1.1,q.z+Math.cos(a)*.8)}));
+  const lines=[];for(let i=0;i<10;i++){const g=new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(),new THREE.Vector3()]);const l=new THREE.Line(g,new THREE.LineBasicMaterial({color:col(i),transparent:true,opacity:.8}));s.add(l);lines.push(l)}
+  s.update(t=>lines.forEach((l,i)=>{l.visible=t>=1&&t<4;const q=s.pos(i,t),a=l.geometry.attributes.position,hx=col(i)===C.red?2:-2;a.setXYZ(0,hx,2.7,-17+1.7);a.setXYZ(1,q.x,1,q.z);a.needsUpdate=true}));
+  for(let i=0;i<10;i++)s.hurt(i,2.2)}});
+def({id:'ludra-shugo2',grp:'p2',gate:'Ludra P2 · ~25 %',name:'Shugo (phase 2)',dur:20,arena:'square',boss:'ludra',clip:'ludra-phase-2-mecanique-shugo',bossStart:{x:0,z:-21,yaw:0},
+ labels:['B4','B1','B3','C1','C2','B2','G4','G1','G2','G3'],
+ start:stack(0,0,10),
+ steps:[[0,'Même principe qu\'en phase 1, Ludra reste au bord.'],[1.4,'Placement : les bloqueurs B partent des coins.'],[3.2,'Chacun éclaire ses cases avec sa météorite.'],[6.4,'Des vagues de Draupnir remplacent les lasers : garde le boss à l\'écran.'],[5.8,'Bloqueurs : 2 cases, puis l\'orbe du coin, puis retour.'],[11.4,'La case sûre brille plus fort.'],[14,'Tout le monde dedans avant l\'explosion.'],[17.4,'Stagger, puis Ludra passe enragé.']].sort((a,b)=>a[0]-b[0]),
+ build:shugo(2)});
+def({id:'ludra-zones',grp:'p2',gate:'Ludra P2 · ~10 %',name:'Zones de couleurs',dur:10,arena:'square',boss:'ludra',clip:'ludra-phase-2-mecanique-zones-de-couleurs',bossStart:{x:0,z:-14,yaw:0},
+ start:stack(0,0,10),
+ steps:[[0,'Des zones rouges et bleues apparaissent, une par joueur.'],[1,'Chacun va près d\'une zone de SA couleur, sans entrer.'],[4.6,'Ludra lance son sort…'],[6.1,'…vers 1,5 s de cast : on entre. Une seule personne par zone.'],[8.2,'L\'explosion touche tout le reste de la carte.']],
+ build(s){const col=i=>i%2?C.red:C.blue,zones=[];for(let k=0;k<10;k++){const p=pol(11,k*36+18);zones.push([p[0],p[1],k%2?C.red:C.blue])}
+  const R_=zones.filter(z=>z[2]===C.red),B_=zones.filter(z=>z[2]===C.blue);let a=0,b=0;
+  for(let i=0;i<10;i++){const z=col(i)===C.red?R_[a++]:B_[b++],L=Math.hypot(z[0],z[1]);s.aura(i,col(i),.5);s.m(i,1,3.6,z[0]*(L-2.6)/L,z[1]*(L-2.6)/L);s.m(i,6.1,6.7,z[0],z[1])}
+  zones.forEach(([x,z,c])=>s.zone('circle',{r:1.4,color:c,at:[x,z],y:.08,op:.5},.4,10));s.tele('box',{w:36,d:36,color:C.death},4.6,8.2,8.2);
+  s.gauge(t=>t<4.6?null:t<8.2?['Barre de sort de Ludra : '+(t-4.6).toFixed(1)+' s',(t-4.6)/3.6,t>=6.1?'linear-gradient(90deg,#2a8f55,#3fd77a)':'']:['Tout le monde a survécu',1,'linear-gradient(90deg,#2a8f55,#3fd77a)'])}});
+
+/* defaults */
+SC.forEach(sc=>{if(!sc.boss)sc.boss=sc.grp==='rahu'?'rahu':sc.grp==='ketu'?'ketu':'ludra'});
+
+/* ===== UI wiring ===== */
+const scrub=$('#scrub'),tLbl=$('#tLbl'),playBtn=$('#play'),cmp=$('#cmp'),cmpVid=$('#cmpVid');
+const groups=[['rahu','Rahu'],['ketu','Ketu'],['p1','Ludra · phase 1'],['p2','Ludra · phase 2']];
+$('#chipGroup').innerHTML=groups.map(([b,l])=>`<div class="chips" data-b="${b}"><h4>${l}</h4>${SC.filter(s=>s.grp===b).map(s=>`<button class="chip" type="button" data-id="${s.id}">${s.name}</button>`).join('')}</div>`).join('');
+const chips=[...document.querySelectorAll('.chip')];
+function setCmp(){if(cmp.hidden)return;if(cur.clip){const src=M(cur.clip);if(!cmpVid.src.endsWith(src)){cmpVid.src=src;cmpVid.play().catch(()=>{})}}else{cmp.hidden=true}}
+function select(id,{scroll=false,push=true}={}){
+ const sc=SC.find(s=>s.id===id)||SC[0];
+ clearDyn();Object.values(BOSSES).forEach(b=>{b.visible=false;b.position.set(0,0,0);b.userData.body.position.y=0});
+ BOSSES.ludra.userData.hands.forEach(h=>h.visible=false);[...P10,...P5].forEach(p=>p.visible=false);
+ floorC.visible=sc.arena==='circle';floorS.visible=sc.arena!=='circle';
+ cur=sc;S=makeS(sc);S.boss.visible=true;
+ const party=S.party,base=sc.party===5?ROLES5:ROLES10;party.forEach((p,i)=>{p.visible=true;p.userData.lbl.setText((sc.labels||[])[i]||base[i][1],sc.labels&&sc.labels[i][0]==='B'?'#d4a85a':undefined)});
+ time=0;capIdx=-1;playing=true;playBtn.textContent='❚❚ Pause';
+ $('#simGate').textContent=sc.gate;$('#simName').textContent=sc.name;
+ stepsEl.innerHTML=sc.steps.map(([t,x])=>`<li data-t="${t}"><span class="num">${t.toFixed(1)} s</span><span>${x}</span></li>`).join('');
+ chips.forEach(c=>c.classList.toggle('on',c.dataset.id===sc.id));
+ $('#btnCmp').disabled=!sc.clip;$('#btnCmp').style.opacity=sc.clip?'':'.5';setCmp();
+ if(push){try{history.replaceState(null,'','#sim-'+sc.id)}catch(e){}}
+ if(scroll)$('#arena-sec').scrollIntoView({behavior:RM?'auto':'smooth'});
+ applyFrame(0)}
+chips.forEach(c=>c.addEventListener('click',()=>select(c.dataset.id)));
+document.addEventListener('click',e=>{const b=e.target.closest('[data-sim]');if(b)select(b.dataset.sim,{scroll:true})});
+stepsEl.addEventListener('click',e=>{const li=e.target.closest('li');if(li){time=+li.dataset.t;applyFrame(time)}});
+playBtn.addEventListener('click',()=>{if(time>=cur.dur)time=0;playing=!playing;playBtn.textContent=playing?'❚❚ Pause':'▶ Lecture'});
+$('#restart').addEventListener('click',()=>{time=0;playing=true;playBtn.textContent='❚❚ Pause'});
+scrub.addEventListener('input',()=>{time=scrub.value/1000*cur.dur;playing=false;playBtn.textContent='▶ Lecture';applyFrame(time)});
+$('#speed').addEventListener('change',e=>speed=+e.target.value);
+$('#tglLabels').addEventListener('change',e=>{labelsOn=e.target.checked});
+$('#btnCmp').addEventListener('click',()=>{if(!cur.clip)return;cmp.hidden=!cmp.hidden;if(cmp.hidden)cmpVid.pause();else{cmpVid.removeAttribute('src');setCmp()}});
+$('#cmpClose').addEventListener('click',()=>{cmp.hidden=true;cmpVid.pause()});
+$('#btnFull').addEventListener('click',()=>{const st=$('#stage');try{document.fullscreenElement?document.exitFullscreen():st.requestFullscreen().catch(()=>{})}catch(e){}});
+addEventListener('keydown',e=>{if(e.target.matches('input,select,textarea'))return;const r=$('#stage').getBoundingClientRect();if(r.bottom<0||r.top>innerHeight)return;
+ if(e.code==='Space'&&!e.target.classList.contains('clip')){e.preventDefault();playBtn.click()}else if(e.key==='ArrowRight'){time=Math.min(cur.dur,time+.5);applyFrame(time)}else if(e.key==='ArrowLeft'){time=Math.max(0,time-.5);applyFrame(time)}
+ else if(e.key===']'||e.key==='['){const i=SC.indexOf(cur);select(SC[(i+(e.key===']'?1:-1)+SC.length)%SC.length].id)}});
+const CAMS={orbit:[14,30,30],top:[0,44,.01],low:[0,12,34]};let camAnim=null;
+function setCam(k,inst){const to=new THREE.Vector3(...CAMS[k]);if(inst){camera.position.copy(to);controls.target.set(0,0,0);return}camAnim={from:camera.position.clone(),to,t:0}}
+document.querySelectorAll('[data-cam]').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('[data-cam]').forEach(x=>x.classList.toggle('on',x===b));setCam(b.dataset.cam)}));setCam('orbit',true);
+function resize(){const w=canvas.clientWidth,h=canvas.clientHeight;if(!w||!h)return;renderer.setSize(w,h,false);camera.aspect=w/h;camera.fov=w<560?62:45;camera.updateProjectionMatrix()}
+new ResizeObserver(resize).observe(canvas);resize();
+let vis=true;new IntersectionObserver(e=>{vis=e[0].isIntersecting},{rootMargin:'100px'}).observe(canvas);
+let last=performance.now();
+function loop(now){const dt=Math.min(.05,(now-last)/1000);last=now;
+ if(vis){if(playing){time+=dt*speed;if(time>=cur.dur+1.2)time=0}const t=Math.min(time,cur.dur);applyFrame(t);
+  Object.values(BOSSES).forEach(b=>b.visible&&b.userData.tick(now/1000));scrub.value=Math.round(t/cur.dur*1000);tLbl.textContent=t.toFixed(1)+' s';
+  if(camAnim){camAnim.t=Math.min(1,camAnim.t+dt*2);camera.position.lerpVectors(camAnim.from,camAnim.to,ss(camAnim.t));controls.target.set(0,0,0);if(camAnim.t>=1)camAnim=null}
+  controls.update();renderer.render(scene,camera)}
+ requestAnimationFrame(loop)}
+const h0=(location.hash||'').replace('#sim-','');
+select(SC.some(s=>s.id===h0)?h0:'ludra-oeil',{push:false});
+if(SC.some(s=>s.id===h0))setTimeout(()=>$('#arena-sec').scrollIntoView(),50);
+requestAnimationFrame(loop);
+})();
+</script>
+</body>
+</html>
