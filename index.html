@@ -359,6 +359,7 @@ footer{border-top:1px solid var(--line);margin-top:60px;padding-block:28px 40px;
         <button class="btn sm" data-cam="top" type="button">Dessus</button>
         <button class="btn sm" data-cam="low" type="button">Raid</button>
         <button class="btn sm" data-cam="boss" type="button">Boss</button>
+        <button class="btn sm" data-cam="party" type="button">Groupe</button>
       </div>
     </div>
     <div class="caption" id="simCap">Chargement de l'arène…</div>
@@ -841,20 +842,75 @@ Object.values(BOSSES).forEach(b=>{b.visible=false;scene.add(b)});
 const stunLbl=textSprite('KO','#f2cf3c','rgba(11,10,14,.85)',1.1);stunLbl.visible=false;scene.add(stunLbl);
 const stars=new THREE.Group();for(let i=0;i<5;i++){const s=glow(0xf2cf3c,.9);s.position.set(Math.sin(i*1.26)*1.4,0,Math.cos(i*1.26)*1.4);stars.add(s)}stars.visible=false;scene.add(stars);
 
-/* players */
-function mkPlayer(role,name){const g=new THREE.Group(),col=C[role],m=std(col,col,.25);
- const bm=new THREE.Mesh(new THREE.CylinderGeometry(.32,.38,1.05,12),m);bm.position.y=.55;g.add(bm);
- const hd=new THREE.Mesh(new THREE.SphereGeometry(.3,12,10),m);hd.position.y=1.3;g.add(hd);bm.castShadow=hd.castShadow=true;
- const nose=new THREE.Mesh(new THREE.ConeGeometry(.12,.35,8),m);nose.rotation.x=Math.PI/2;nose.position.set(0,1.3,.38);g.add(nose);
+/* players — personnages par classe (Daeva), animés */
+const SKIN=0xf1d2b6,HAIR=[0x2a1d14,0xd8c08a,0x5a2a1a,0xe8e2d8,0x1a1a24,0x8a4a2a,0xb05a3a,0x3a3a50];
+const PMAT={};const pmat=(c,o={})=>{const k=c+JSON.stringify(o);return PMAT[k]||(PMAT[k]=new THREE.MeshStandardMaterial(Object.assign({color:c,roughness:.6,metalness:.15},o)))};
+const featherShape=new THREE.Shape();featherShape.moveTo(0,0);featherShape.quadraticCurveTo(.09,.5,0,1);featherShape.quadraticCurveTo(-.09,.5,0,0);
+const featherGeo=new THREE.ShapeGeometry(featherShape,5);
+const KIT={tank:[0x8d93a3,0x2c3a5c,'Gardien'],gladi:[0x6e4d33,0xa3a9b6,'Gladiateur'],cleric:[0xece5d2,0xc9a050,'Clerc'],aede:[0x2f6a4a,0xd8c08a,'Aède'],assassin:[0x26212c,0x7a1c2c,'Assassin'],ranger:[0x3d5a2c,0x7a5a3a,'Rôdeur'],sorc:[0x3a2a6a,0x8fd3bf,'Sorcier']};
+function mkPlayer(role,name,kind,idx){
+ const g=new THREE.Group(),col=C[role],rig=new THREE.Group();g.add(rig);
+ const [c0,c1]=KIT[kind],armor=kind==='tank'||kind==='gladi';
+ const main=pmat(c0,{metalness:armor?.75:.12,roughness:armor?.32:.65}),acc=pmat(c1,{metalness:.55,roughness:.38}),skin=pmat(SKIN,{roughness:.75}),dark=pmat(0x18161e,{roughness:.6}),roleM=pmat(col,{emissive:col,emissiveIntensity:.45});
+ const robe=kind==='cleric'||kind==='aede'||kind==='sorc';
+ const legs=[-1,1].map(s=>{const p=new THREE.Group();p.position.set(.12*s,.76,0);rig.add(p);const l=new THREE.Mesh(new THREE.CylinderGeometry(.095,.08,.6,8),robe?dark:main);l.position.y=-.32;p.add(l);const b=new THREE.Mesh(new THREE.BoxGeometry(.15,.13,.27),armor?acc:dark);b.position.set(0,-.68,.05);p.add(b);return p});
+ const torso=new THREE.Group();torso.position.y=.76;rig.add(torso);
+ const ch=new THREE.Mesh(new THREE.CylinderGeometry(.25,.19,.6,10),main);ch.position.y=.33;torso.add(ch);
+ const belt=new THREE.Mesh(new THREE.CylinderGeometry(.205,.205,.08,10),roleM);belt.position.y=.07;torso.add(belt);
+ if(robe){const sk=new THREE.Mesh(new THREE.CylinderGeometry(.21,.4,.74,12,1,true),pmat(c0,{side:THREE.DoubleSide,roughness:.75}));sk.position.y=-.33;torso.add(sk);const hem=new THREE.Mesh(new THREE.TorusGeometry(.39,.025,6,20),acc);hem.rotation.x=Math.PI/2;hem.position.y=-.69;torso.add(hem)}
+ else{const sk=new THREE.Mesh(new THREE.CylinderGeometry(.2,.27,.26,10,1,true),pmat(c1,{side:THREE.DoubleSide}));sk.position.y=-.08;torso.add(sk)}
+ const arms=[-1,1].map(s=>{const p=new THREE.Group();p.position.set(.31*s,.57,0);torso.add(p);const a=new THREE.Mesh(new THREE.CylinderGeometry(.072,.062,.5,8),main);a.position.y=-.25;p.add(a);const h=new THREE.Mesh(new THREE.SphereGeometry(.072,8,6),armor?acc:skin);h.position.y=-.52;p.add(h);const sh=new THREE.Mesh(new THREE.SphereGeometry(armor?.15:.11,10,8),armor?acc:main);sh.scale.y=armor?.8:1;p.add(sh);const hand=new THREE.Group();hand.position.y=-.53;p.add(hand);p.userData.hand=hand;return p});
+ const armR=arms[0],armL=arms[1];
+ const head=new THREE.Group();head.position.y=.98;torso.add(head);
+ head.add(new THREE.Mesh(new THREE.SphereGeometry(.21,16,12),skin));
+ const hairM=pmat(HAIR[idx%HAIR.length],{roughness:.85});
+ const hair=new THREE.Mesh(new THREE.SphereGeometry(.225,14,10,0,Math.PI*2,0,Math.PI*.56),hairM);hair.rotation.x=-.3;head.add(hair);
+ if(idx%2){const tail=new THREE.Mesh(new THREE.ConeGeometry(.08,.42,6),hairM);tail.position.set(0,-.12,-.22);tail.rotation.x=-.5;head.add(tail)}
+ [-1,1].forEach(s=>{const e=new THREE.Mesh(new THREE.SphereGeometry(.03,6,5),dark);e.position.set(.075*s,0,.195);head.add(e)});
+ const R=armR.userData.hand,L=armL.userData.hand;let orb=null;
+ const metal=pmat(0xd8dde6,{metalness:.9,roughness:.2}),wood=pmat(0x5a3a22,{roughness:.8});
+ const blade=(len,w)=>{const b=new THREE.Group(),m=new THREE.Mesh(new THREE.BoxGeometry(w,len,.025),metal);m.position.y=len/2+.12;b.add(m);const tp=new THREE.Mesh(new THREE.ConeGeometry(w*.72,w*1.6,4),metal);tp.scale.z=.2;tp.position.y=len+.12+w*.8;b.add(tp);const gd=new THREE.Mesh(new THREE.BoxGeometry(w*3.2,.04,.07),acc);gd.position.y=.1;b.add(gd);const gr=new THREE.Mesh(new THREE.CylinderGeometry(.025,.025,.16,6),dark);b.add(gr);return b};
+ armR.userData.base=[0,0,0];armL.userData.base=[0,0,0];
+ if(kind==='tank'){const hl=new THREE.Mesh(new THREE.SphereGeometry(.245,14,10,0,Math.PI*2,0,Math.PI*.62),main);hl.rotation.x=-.15;head.add(hl);const cr=new THREE.Mesh(new THREE.BoxGeometry(.04,.16,.32),roleM);cr.position.set(0,.24,-.02);head.add(cr);
+  const sh=new THREE.Group(),sb=new THREE.Mesh(new THREE.CylinderGeometry(.3,.3,.06,6).rotateX(Math.PI/2),acc);sb.scale.set(1,1.25,1);sh.add(sb);const em=new THREE.Mesh(new THREE.CircleGeometry(.12,6),roleM);em.position.z=.035;sh.add(em);sh.position.set(.06,-.05,.14);L.add(sh);
+  const sw=blade(.62,.06);sw.rotation.x=Math.PI/2.3;R.add(sw);armR.userData.base=[-.5,0,0];armL.userData.base=[-.7,0,-.25]}
+ if(kind==='gladi'){const sw=blade(1.05,.1);sw.rotation.x=Math.PI/2.8;R.add(sw);armR.userData.base=[-.6,0,.25];armL.userData.base=[-.6,0,-.25];
+  const bn=new THREE.Mesh(new THREE.TorusGeometry(.215,.035,6,20),roleM);bn.rotation.x=Math.PI/2;bn.position.y=.07;head.add(bn)}
+ if(kind==='cleric'){const ci=new THREE.Mesh(new THREE.TorusGeometry(.215,.025,6,20),acc);ci.rotation.x=Math.PI/2.2;ci.position.y=.09;head.add(ci);
+  const mc=new THREE.Group(),hd=new THREE.Mesh(new THREE.CylinderGeometry(.025,.025,.55,6),acc);hd.position.y=.2;const bl=new THREE.Mesh(new THREE.IcosahedronGeometry(.1,0),pmat(0xf2cf3c,{emissive:0xf2cf3c,emissiveIntensity:.8,metalness:.6}));bl.position.y=.5;mc.add(hd,bl,glow(0xfff2b0,.8));mc.children[2].position.y=.5;mc.rotation.x=.6;R.add(mc);armR.userData.base=[-.35,0,0];
+  const bk=new THREE.Mesh(new THREE.BoxGeometry(.2,.26,.07),pmat(0x7a1c1c));bk.position.set(0,-.02,.1);L.add(bk);armL.userData.base=[-.6,0,-.15]}
+ if(kind==='aede'){const st=new THREE.Group(),sh=new THREE.Mesh(new THREE.CylinderGeometry(.025,.03,1.5,6),wood);sh.position.y=.35;const cr=new THREE.Mesh(new THREE.TorusGeometry(.13,.025,6,16,Math.PI*1.4),acc);cr.position.y=1.15;const ob=new THREE.Mesh(new THREE.SphereGeometry(.07,10,8),pmat(0x7dffb0,{emissive:0x3fd77a,emissiveIntensity:1}));ob.position.y=1.15;const gl=glow(0x7dffb0,.9);gl.position.y=1.15;st.add(sh,cr,ob,gl);st.rotation.x=.12;R.add(st);armR.userData.base=[-.3,0,0];
+  [-1,1].forEach(s=>{const rb=new THREE.Mesh(new THREE.PlaneGeometry(.06,.5),pmat(col,{side:THREE.DoubleSide,emissive:col,emissiveIntensity:.3}));rb.position.set(.12*s,-.1,-.2);rb.rotation.x=.3;head.add(rb)})}
+ if(kind==='assassin'){const hood=new THREE.Mesh(new THREE.SphereGeometry(.25,14,10,Math.PI/2+.7,Math.PI*2-1.4,0,Math.PI*.62),pmat(c0,{side:THREE.DoubleSide,roughness:.8}));head.add(hood);const sc=new THREE.Mesh(new THREE.CylinderGeometry(.16,.2,.1,10),roleM);sc.position.y=-.16;head.add(sc);
+  [R,L].forEach((h,k)=>{const d=new THREE.Mesh(new THREE.ConeGeometry(.035,.36,4),metal);d.position.set(0,0,.18);d.rotation.x=Math.PI/2;h.add(d)});armR.userData.base=[-.8,0,.2];armL.userData.base=[-.8,0,-.2]}
+ if(kind==='ranger'){const cap=new THREE.Mesh(new THREE.ConeGeometry(.24,.3,10),pmat(c0));cap.position.y=.17;cap.rotation.x=-.35;head.add(cap);
+  const bow=new THREE.Mesh(new THREE.TorusGeometry(.42,.022,6,20,Math.PI).rotateZ(Math.PI).rotateY(Math.PI/2),wood);L.add(bow);const str=new THREE.Mesh(new THREE.CylinderGeometry(.004,.004,.84,4).rotateX(Math.PI/2),pmat(0xe8e2d8));L.add(str);armL.userData.base=[-1.3,0,-.1];armR.userData.base=[-1.1,0,.2];
+  const qv=new THREE.Mesh(new THREE.CylinderGeometry(.08,.07,.45,8),wood);qv.position.set(.1,.4,-.24);qv.rotation.z=-.4;torso.add(qv);for(let k=0;k<3;k++){const ar=new THREE.Mesh(new THREE.ConeGeometry(.03,.08,4),roleM);ar.position.set(.18+k*.025,.66,-.24-k*.02);ar.rotation.z=-.4;torso.add(ar)}}
+ if(kind==='sorc'){const hat=new THREE.Mesh(new THREE.ConeGeometry(.2,.5,12),pmat(c0));hat.position.set(0,.3,-.04);hat.rotation.x=-.25;head.add(hat);const brim=new THREE.Mesh(new THREE.TorusGeometry(.24,.04,6,20),pmat(c0));brim.rotation.x=Math.PI/2;brim.position.y=.1;head.add(brim);
+  orb=new THREE.Group();const o=new THREE.Mesh(new THREE.SphereGeometry(.09,12,10),pmat(0xd8b8ff,{emissive:0xa35cff,emissiveIntensity:1.2}));orb.add(o,glow(0xb48cff,1));torso.add(orb);armR.userData.base=[-.9,0,.1];
+  const bk=new THREE.Mesh(new THREE.BoxGeometry(.22,.28,.08),pmat(0x2a1a4a,{emissive:0x5a2aa0,emissiveIntensity:.3}));bk.position.set(0,0,.1);L.add(bk);armL.userData.base=[-.7,0,-.1]}
+ /* ailes de Daeva */
+ const wm=pmat(0xf4f0ff,{emissive:col,emissiveIntensity:.55,transparent:true,opacity:.88,side:THREE.DoubleSide,roughness:.5});
+ const wings=[-1,1].map(s=>{const p=new THREE.Group();p.position.set(.08*s,.48,-.2);torso.add(p);const w=new THREE.Group();if(s<0)w.scale.x=-1;p.add(w);
+  for(let k=0;k<5;k++){const f=new THREE.Mesh(featherGeo,wm),a=(15+k*16)*deg,L2=.4+k*.06;f.scale.set(1.2,L2,1);f.rotation.z=-Math.PI/2+a;f.position.set(Math.cos(a)*.05,Math.sin(a)*.05,0);w.add(f)}return[p,s]});
  const base=new THREE.Mesh(new THREE.RingGeometry(.45,.6,24).rotateX(-Math.PI/2),mat(col,.8));base.position.y=.03;g.add(base);
  const aura=new THREE.Mesh(new THREE.CircleGeometry(.9,24).rotateX(-Math.PI/2),mat(0xffffff,.5));aura.position.y=.025;aura.visible=false;g.add(aura);
- const hurt=glow(0xff3b3b,3);hurt.position.y=.9;hurt.visible=false;g.add(hurt);
- const shield=new THREE.Mesh(new THREE.SphereGeometry(1.05,16,12),new THREE.MeshBasicMaterial({color:0xf2cf3c,transparent:true,opacity:.35,wireframe:true}));shield.position.y=.8;shield.visible=false;g.add(shield);
- const lbl=textSprite(name,'#'+col.toString(16).padStart(6,'0'),'rgba(11,10,14,.72)',.75);lbl.position.y=2.15;g.add(lbl);
- g.userData={role,name,col,aura,hurt,shield,lbl};return g}
-const ROLES10=[['tank','T'],['heal','H1'],['heal','H2'],['dps','D1'],['dps','D2'],['dps','D3'],['dps','D4'],['dps','D5'],['dps','D6'],['dps','D7']];
-const ROLES5=[['tank','T'],['heal','AE'],['heal','CL'],['dps','D1'],['dps','D2']];
-const P10=ROLES10.map(([r,n])=>mkPlayer(r,n)),P5=ROLES5.map(([r,n])=>mkPlayer(r,n));[...P10,...P5].forEach(p=>{p.visible=false;scene.add(p)});
+ const hurt=glow(0xff3b3b,3);hurt.position.y=1;hurt.visible=false;g.add(hurt);
+ const shield=new THREE.Mesh(new THREE.SphereGeometry(1.1,16,12),new THREE.MeshBasicMaterial({color:0xf2cf3c,transparent:true,opacity:.35,wireframe:true}));shield.position.y=.95;shield.visible=false;g.add(shield);
+ const lbl=textSprite(name,'#'+col.toString(16).padStart(6,'0'),'rgba(11,10,14,.72)',.75);lbl.position.y=2.35;g.add(lbl);
+ rig.traverse(o=>{if(o.isMesh&&o.material!==wm)o.castShadow=true});
+ rig.scale.setScalar(1.08);
+ function anim(t,spd,air){const sw=Math.min(1,spd/5),ph=t*11+idx;
+  const lg=air?[-.9,.5]:[Math.sin(ph)*.85*sw,-Math.sin(ph)*.85*sw];legs[0].rotation.x=lg[0];legs[1].rotation.x=lg[1];
+  [armR,armL].forEach((a,k)=>{const b=a.userData.base,sgn=k?1:-1;a.rotation.set(b[0]*(1-sw*.6)+(air?-1.1:sgn*Math.sin(ph)*.7*sw),b[1],b[2]+(air?(k?-.5:.5):0))});
+  torso.rotation.x=sw*.18;rig.position.y=Math.abs(Math.sin(ph))*.07*sw+.02*Math.sin(t*2.4+idx);head.rotation.y=.15*Math.sin(t*.7+idx*1.7)*(1-sw);
+  const fl=air?1.1:.35;wings.forEach(([p,s])=>{p.rotation.y=s*(.55+fl*.35*Math.sin(t*(air?14:3)+idx));p.rotation.z=s*.15});
+  if(orb)orb.position.set(-.45+.06*Math.sin(t*2+idx),.75+.1*Math.sin(t*3+idx),.25)}
+ anim(0,0,false);
+ g.userData={role,name,col,aura,hurt,shield,lbl,anim,kind:KIT[kind][2]};return g}
+const ROLES10=[['tank','T','tank'],['heal','H1','cleric'],['heal','H2','aede'],['dps','D1','assassin'],['dps','D2','gladi'],['dps','D3','ranger'],['dps','D4','sorc'],['dps','D5','ranger'],['dps','D6','sorc'],['dps','D7','assassin']];
+const ROLES5=[['tank','T','tank'],['heal','AE','aede'],['heal','CL','cleric'],['dps','D1','assassin'],['dps','D2','ranger']];
+const P10=ROLES10.map(([r,n,k],i)=>mkPlayer(r,n,k,i)),P5=ROLES5.map(([r,n,k],i)=>mkPlayer(r,n,k,i+3));[...P10,...P5].forEach(p=>{p.visible=false;scene.add(p)});
 
 const pol=(r,a)=>[r*Math.sin(a*deg),r*Math.cos(a*deg)];
 const OFF=[[0,0],[1,.4],[-1,.4],[.55,-.9],[-.55,-.9],[1.7,-.5],[-1.7,-.5],[0,1.3],[1.3,1.4],[-1.3,1.4]];
@@ -921,7 +977,7 @@ const capEl=$('#simCap'),stepsEl=$('#steps'),gaugeEl=$('#gauge'),gaugeLbl=$('#ga
 function applyFrame(t){const st=S,sc=cur;
  const bq=samplePath(st.bossPath,t);
  st.party.forEach((p,i)=>{const q=samplePath(st.paths[i],t);let y=0;for(const tj of st.jumps[i])if(t>=tj&&t<=tj+.6)y=Math.max(y,1.7*Math.sin(Math.PI*(t-tj)/.6));
-  p.position.set(q.x,y,q.z);const fy=st.face&&st.face(i,t,q);p.rotation.y=fy!=null?fy:Math.atan2(bq.x-q.x,bq.z-q.z);
+  p.position.set(q.x,y,q.z);{const q0=samplePath(st.paths[i],Math.max(0,t-.06));const sp=t<.06?0:Math.hypot(q.x-q0.x,q.z-q0.z)/.06;p.userData.anim(t,sp>40?0:sp,y>.05)}const fy=st.face&&st.face(i,t,q);p.rotation.y=fy!=null?fy:Math.atan2(bq.x-q.x,bq.z-q.z);
   p.userData.lbl.visible=labelsOn;let h=false;for(const [hi,ht] of st.hurts)if(hi===i&&t>=ht&&t<ht+.7)h=true;p.userData.hurt.visible=h;
   let au=null;for(const [ai,col,t0,t1] of st.auras)if(ai===i&&t>=t0&&t<t1)au=col;p.userData.aura.visible=!!au;if(au)p.userData.aura.material.color.setHex(au);
   let sh=false;for(const [si,t0,t1] of st.shields)if(si===i&&t>=t0&&t<t1)sh=true;p.userData.shield.visible=sh;if(sh)p.userData.shield.rotation.y=t*2});
@@ -1200,7 +1256,7 @@ addEventListener('keydown',e=>{if(e.target.matches('input,select,textarea'))retu
  else if(e.key===']'||e.key==='['){const i=SC.indexOf(cur);select(SC[(i+(e.key===']'?1:-1)+SC.length)%SC.length].id)}});
 const CAMS={orbit:[14,30,30],top:[0,44,.01],low:[0,12,34]};let camAnim=null;
 const camTgt=new THREE.Vector3();
-function setCam(k,inst){let to,tg=new THREE.Vector3();if(k==='boss'){const b=S.boss,p=b.position,y=b.rotation.y,big=cur.boss==='ludra';tg.set(p.x,p.y+(big?3:3.4),p.z);const d=big?13:8.5;to=new THREE.Vector3(p.x+Math.sin(y+.65)*d,p.y+(big?5.5:4),p.z+Math.cos(y+.65)*d)}else to=new THREE.Vector3(...CAMS[k]);if(inst){camera.position.copy(to);controls.target.copy(tg);return}camAnim={from:camera.position.clone(),to,t:0,tf:controls.target.clone(),tt:tg}}
+function setCam(k,inst){let to,tg=new THREE.Vector3();if(k==='party'){const c=new THREE.Vector3();S.party.forEach(p=>c.add(p.position));c.divideScalar(S.party.length);c.y=0;tg.set(c.x,1.1,c.z);const bp=S.boss.position,a=Math.atan2(c.x-bp.x,c.z-bp.z)+.5;to=new THREE.Vector3(c.x+Math.sin(a)*7.5,4.2,c.z+Math.cos(a)*7.5)}else if(k==='boss'){const b=S.boss,p=b.position,y=b.rotation.y,big=cur.boss==='ludra';tg.set(p.x,p.y+(big?3:3.4),p.z);const d=big?13:8.5;to=new THREE.Vector3(p.x+Math.sin(y+.65)*d,p.y+(big?5.5:4),p.z+Math.cos(y+.65)*d)}else to=new THREE.Vector3(...CAMS[k]);if(inst){camera.position.copy(to);controls.target.copy(tg);return}camAnim={from:camera.position.clone(),to,t:0,tf:controls.target.clone(),tt:tg}}
 document.querySelectorAll('[data-cam]').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('[data-cam]').forEach(x=>x.classList.toggle('on',x===b));setCam(b.dataset.cam)}));setCam('orbit',true);
 function resize(){const w=canvas.clientWidth,h=canvas.clientHeight;if(!w||!h)return;renderer.setSize(w,h,false);camera.aspect=w/h;camera.fov=w<560?62:45;camera.updateProjectionMatrix()}
 new ResizeObserver(resize).observe(canvas);resize();
